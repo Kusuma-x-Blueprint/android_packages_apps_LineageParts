@@ -27,6 +27,12 @@
             <intent android:action="com.android.settings.action.STATUS_BAR_TUNER" />
         </Preference>
 
+        <Preference
+            android:fragment="org.lineageos.lineageparts.statusbar.NetworkTrafficSettings"
+            android:key="network_traffic_settings"
+            android:title="@string/network_traffic_settings_title"
+            android:summary="@string/network_traffic_settings_summary" />
+
     </PreferenceCategory>
 
     <PreferenceCategory
