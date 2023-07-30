@@ -30,6 +30,14 @@
                 android:summary="@string/navigation_bar_invert_layout_summary"
                 android:defaultValue="false" />
 
+        <lineageos.preference.SecureSettingListPreference
+                android:key="navbar_layout_views"
+                android:title="@string/navbar_layout_title"
+                android:summary="%s"
+                android:entries="@array/navbar_layout_entries"
+                android:entryValues="@array/navbar_layout_values"
+                android:defaultValue="default" />
+
         <ListPreference
             android:key="navigation_back_long_press"
             android:dialogTitle="@string/navigation_bar_back_long_press_title"

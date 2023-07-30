@@ -78,6 +78,7 @@ public class SystemUITunerSettings extends SettingsPreferenceFragment
     private static final String KEY_ENABLE_TASKBAR = "enable_taskbar";
     private static final String KEY_NAVIGATION_ARROW_KEYS = "navigation_bar_menu_arrow_keys";
     private static final String KEY_NAV_BAR_INVERSE = "sysui_nav_bar_inverse";
+    private static final String KEY_NAVBAR_LAYOUT_VIEWS = "navbar_layout_views";
     private static final String KEY_NAVIGATION_BACK_LONG_PRESS = "navigation_back_long_press";
     private static final String KEY_NAVIGATION_HOME_LONG_PRESS = "navigation_home_long_press";
     private static final String KEY_NAVIGATION_HOME_DOUBLE_TAP = "navigation_home_double_tap";
@@ -94,6 +95,7 @@ public class SystemUITunerSettings extends SettingsPreferenceFragment
     private PreferenceCategory mStatusBarClockCategory;
 
     private SwitchPreference mNavBarInverse;
+    private ListPreference mNavBarLayoutViews;
     private SwitchPreference mNavigationArrowKeys;
     private SwitchPreference mEnableTaskbar;
     private ListPreference mNavigationBackLongPressAction;
@@ -198,6 +200,8 @@ public class SystemUITunerSettings extends SettingsPreferenceFragment
         mNavigationArrowKeys = findPreference(KEY_NAVIGATION_ARROW_KEYS);
 
         mNavBarInverse = findPreference(KEY_NAV_BAR_INVERSE);
+
+        mNavBarLayoutViews = findPreference(KEY_NAVBAR_LAYOUT_VIEWS);
 
         List<Integer> unsupportedValues = new ArrayList<>();
         List<String> entries = new ArrayList<>(
@@ -416,6 +420,7 @@ public class SystemUITunerSettings extends SettingsPreferenceFragment
 
                     mNavigationPreferencesCat.removePreference(mNavigationArrowKeys);
                     mNavigationPreferencesCat.removePreference(mNavBarInverse);
+                    mNavigationPreferencesCat.removePreference(mNavBarLayoutViews);
                     mNavigationPreferencesCat.removePreference(mNavigationBackLongPressAction);
                     mNavigationPreferencesCat.removePreference(mNavigationHomeLongPressAction);
                     mNavigationPreferencesCat.removePreference(mNavigationHomeDoubleTapAction);
@@ -423,6 +428,7 @@ public class SystemUITunerSettings extends SettingsPreferenceFragment
                 } else if (DeviceUtils.isSwipeUpEnabled(getContext())) {
                     mNavigationPreferencesCat.addPreference(mNavigationArrowKeys);
                     mNavigationPreferencesCat.addPreference(mNavBarInverse);
+                    mNavigationPreferencesCat.addPreference(mNavBarLayoutViews);
                     mNavigationPreferencesCat.addPreference(mNavigationBackLongPressAction);
                     mNavigationPreferencesCat.addPreference(mNavigationHomeLongPressAction);
                     mNavigationPreferencesCat.addPreference(mNavigationHomeDoubleTapAction);
@@ -432,6 +438,7 @@ public class SystemUITunerSettings extends SettingsPreferenceFragment
                 } else {
                     mNavigationPreferencesCat.addPreference(mNavigationArrowKeys);
                     mNavigationPreferencesCat.addPreference(mNavBarInverse);
+                    mNavigationPreferencesCat.addPreference(mNavBarLayoutViews);
                     mNavigationPreferencesCat.addPreference(mNavigationBackLongPressAction);
                     mNavigationPreferencesCat.addPreference(mNavigationHomeLongPressAction);
                     mNavigationPreferencesCat.addPreference(mNavigationHomeDoubleTapAction);
@@ -467,12 +474,14 @@ public class SystemUITunerSettings extends SettingsPreferenceFragment
                 } else if (DeviceUtils.isSwipeUpEnabled(context)) {
                     result.add(KEY_NAVIGATION_ARROW_KEYS);
                     result.add(KEY_NAV_BAR_INVERSE);
+                    result.add(KEY_NAVBAR_LAYOUT_VIEWS);
                     result.add(KEY_NAVIGATION_BACK_LONG_PRESS);
                     result.add(KEY_NAVIGATION_HOME_LONG_PRESS);
                     result.add(KEY_NAVIGATION_HOME_DOUBLE_TAP);
                 } else {
                     result.add(KEY_NAVIGATION_ARROW_KEYS);
                     result.add(KEY_NAV_BAR_INVERSE);
+                    result.add(KEY_NAVBAR_LAYOUT_VIEWS);
                     result.add(KEY_NAVIGATION_BACK_LONG_PRESS);
                     result.add(KEY_NAVIGATION_HOME_LONG_PRESS);
                     result.add(KEY_NAVIGATION_HOME_DOUBLE_TAP);
