@@ -42,6 +42,14 @@
                 android:summary="@string/navigation_bar_arrow_keys_summary"
                 android:defaultValue="false" />
 
+        <lineageos.preference.SecureSettingListPreference
+                android:key="navbar_layout_views"
+                android:title="@string/navbar_layout_title"
+                android:summary="%s"
+                android:entries="@array/navbar_layout_entries"
+                android:entryValues="@array/navbar_layout_values"
+                android:defaultValue="default" />
+
         <lineageos.preference.SecureSettingSwitchPreference
                 android:key="sysui_nav_bar_inverse"
                 android:title="@string/navigation_bar_invert_layout_title"
