@@ -21,4 +21,7 @@
     <string name="network_traffic_units_title">Traffic measurement units</string>
     <string name="network_traffic_units_bits" translatable="false">kbps, Mbps, Gbps</string>
     <string name="network_traffic_units_bytes" translatable="false">kB/s, MB/s, GB/s</string>
+
+    <!-- Power menu -->
+    <string name="power_menu_lockdown_title">Lock down</string>
 </resources>
