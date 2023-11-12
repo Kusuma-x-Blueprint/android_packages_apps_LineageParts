@@ -35,12 +35,10 @@
         android:summary="%s"
         android:title="@string/network_traffic_units_title" />
 
-    <DropDownPreference
-        android:entries="@array/network_traffic_show_units_entries"
-        android:entryValues="@array/network_traffic_show_units_values"
+    <lineageos.preference.LineageSecureSettingSwitchPreference
+        android:defaultValue="true"
         android:key="network_traffic_show_units"
-        android:persistent="false"
-        android:summary="%s"
+        android:summary="@string/network_traffic_show_units_summary"
         android:title="@string/network_traffic_show_units" />
 
 </PreferenceScreen>
