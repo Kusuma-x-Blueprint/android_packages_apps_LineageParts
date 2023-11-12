@@ -7,7 +7,6 @@ package org.lineageos.lineageparts.statusbar;
 
 import android.content.ContentResolver;
 import android.os.Bundle;
-import android.view.View;
 
 import androidx.preference.DropDownPreference;
 import androidx.preference.Preference;
@@ -16,7 +15,6 @@ import lineageos.preference.LineageSecureSettingSwitchPreference;
 import lineageos.providers.LineageSettings;
 import org.lineageos.lineageparts.R;
 import org.lineageos.lineageparts.SettingsPreferenceFragment;
-import org.lineageos.lineageparts.utils.DeviceUtils;
 
 
 public class NetworkTrafficSettings extends SettingsPreferenceFragment
@@ -24,10 +22,6 @@ public class NetworkTrafficSettings extends SettingsPreferenceFragment
 
     private static final String TAG = "NetworkTrafficSettings";
     private static final String STATUS_BAR_CLOCK_STYLE = "status_bar_clock";
-
-    private static final int POSITION_START = 0;
-    private static final int POSITION_CENTER = 1;
-    private static final int POSITION_END = 2;
 
     private DropDownPreference mNetTrafficMode;
     private DropDownPreference mNetTrafficPosition;
@@ -49,41 +43,6 @@ public class NetworkTrafficSettings extends SettingsPreferenceFragment
                 LineageSettings.Secure.NETWORK_TRAFFIC_MODE, 0);
         mNetTrafficMode.setValue(String.valueOf(mode));
 
-        final boolean hasCenteredCutout = DeviceUtils.hasCenteredCutout(getActivity());
-        final boolean disallowCenteredTraffic = hasCenteredCutout || getClockPosition() == 1;
-
-        mNetTrafficPosition = findPreference(LineageSettings.Secure.NETWORK_TRAFFIC_POSITION);
-        mNetTrafficPosition.setOnPreferenceChangeListener(this);
-
-        // Adjust network traffic preferences for RTL
-        if (getResources().getConfiguration().getLayoutDirection() == View.LAYOUT_DIRECTION_RTL) {
-            if (disallowCenteredTraffic) {
-                mNetTrafficPosition.setEntries(R.array.network_traffic_position_entries_notch_rtl);
-                mNetTrafficPosition.setEntryValues(R.array.network_traffic_position_values_notch);
-            } else {
-                mNetTrafficPosition.setEntries(R.array.network_traffic_position_entries_rtl);
-                mNetTrafficPosition.setEntryValues(R.array.network_traffic_position_values);
-            }
-        } else {
-            if (disallowCenteredTraffic) {
-                mNetTrafficPosition.setEntries(R.array.network_traffic_position_entries_notch);
-                mNetTrafficPosition.setEntryValues(R.array.network_traffic_position_values_notch);
-            } else {
-                mNetTrafficPosition.setEntries(R.array.network_traffic_position_entries);
-                mNetTrafficPosition.setEntryValues(R.array.network_traffic_position_values);
-            }
-        }
-
-        int position = LineageSettings.Secure.getInt(resolver,
-                LineageSettings.Secure.NETWORK_TRAFFIC_POSITION, POSITION_CENTER);
-
-        if (disallowCenteredTraffic && position == POSITION_CENTER) {
-            position = POSITION_END;
-            LineageSettings.Secure.putInt(getActivity().getContentResolver(),
-                LineageSettings.Secure.NETWORK_TRAFFIC_POSITION, position);
-        }
-        mNetTrafficPosition.setValue(String.valueOf(position));
-
         mNetTrafficAutohide = findPreference(LineageSettings.Secure.NETWORK_TRAFFIC_AUTOHIDE);
         mNetTrafficAutohide.setOnPreferenceChangeListener(this);
 
@@ -97,6 +56,7 @@ public class NetworkTrafficSettings extends SettingsPreferenceFragment
         mNetTrafficShowUnits.setOnPreferenceChangeListener(this);
 
         updateEnabledStates(mode);
+        updateForClockConflicts();
     }
 
     @Override
@@ -106,10 +66,7 @@ public class NetworkTrafficSettings extends SettingsPreferenceFragment
             LineageSettings.Secure.putInt(getActivity().getContentResolver(),
                     LineageSettings.Secure.NETWORK_TRAFFIC_MODE, mode);
             updateEnabledStates(mode);
-        } else if (preference == mNetTrafficPosition) {
-            int position = Integer.parseInt((String) newValue);
-            LineageSettings.Secure.putInt(getActivity().getContentResolver(),
-                    LineageSettings.Secure.NETWORK_TRAFFIC_POSITION, position);
+            updateForClockConflicts();
         } else if (preference == mNetTrafficUnits) {
             int units = Integer.parseInt((String) newValue);
             LineageSettings.Secure.putInt(getActivity().getContentResolver(),
@@ -121,6 +78,7 @@ public class NetworkTrafficSettings extends SettingsPreferenceFragment
     private void updateEnabledStates(int mode) {
         final boolean enabled = mode != 0;
         mNetTrafficPosition.setEnabled(enabled);
+        mNetTrafficPosition.setEnabled(enabled);
         mNetTrafficAutohide.setEnabled(enabled);
         mNetTrafficUnits.setEnabled(enabled);
         mNetTrafficShowUnits.setEnabled(enabled);
@@ -129,5 +87,15 @@ public class NetworkTrafficSettings extends SettingsPreferenceFragment
     private int getClockPosition() {
         return LineageSettings.System.getInt(getActivity().getContentResolver(),
                 STATUS_BAR_CLOCK_STYLE, 2);
+
+        if (clockPosition != 1) {
+            return;
+        }
+
+        mNetTrafficMode.setEnabled(false);
+        Toast.makeText(getActivity(),
+                R.string.network_traffic_disabled_clock,
+                Toast.LENGTH_LONG).show();
+        updateEnabledStates(0);
     }
 }
