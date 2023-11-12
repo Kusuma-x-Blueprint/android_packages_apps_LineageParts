@@ -13,14 +13,6 @@
         android:summary="%s"
         android:title="@string/network_traffic_mode_title" />
 
-    <DropDownPreference
-        android:entries="@array/network_traffic_position_entries"
-        android:entryValues="@array/network_traffic_position_values"
-        android:key="network_traffic_position"
-        android:persistent="false"
-        android:summary="%s"
-        android:title="@string/network_traffic_position_title" />
-
     <lineageos.preference.LineageSecureSettingSwitchPreference
         android:defaultValue="false"
         android:key="network_traffic_autohide"
