@@ -10,12 +10,67 @@
     android:key="status_bar_settings"
     android:title="@string/status_bar_title">
 
-    <lineageos.preference.LineageSystemSettingListPreference
-        android:key="qs_quick_pulldown"
-        android:title="@string/status_bar_quick_qs_pulldown_title"
-        android:entries="@array/status_bar_quick_qs_pulldown_entries"
-        android:entryValues="@array/status_bar_quick_qs_pulldown_values"
-        android:defaultValue="0" />
+    <PreferenceCategory
+        android:key="navigation_bar_category"
+        android:title="@string/navigation_bar_category" >
+
+        <SwitchPreference
+                android:key="enable_taskbar"
+                android:title="@string/navigation_bar_enable_taskbar_title" />
+
+        <lineageos.preference.LineageSystemSettingSwitchPreference
+                android:key="navigation_bar_menu_arrow_keys"
+                android:title="@string/navigation_bar_arrow_keys_title"
+                android:summary="@string/navigation_bar_arrow_keys_summary"
+                android:defaultValue="false" />
+
+        <lineageos.preference.SecureSettingSwitchPreference
+                android:key="sysui_nav_bar_inverse"
+                android:title="@string/navigation_bar_invert_layout_title"
+                android:summary="@string/navigation_bar_invert_layout_summary"
+                android:defaultValue="false" />
+
+        <ListPreference
+            android:key="navigation_back_long_press"
+            android:dialogTitle="@string/navigation_bar_back_long_press_title"
+            android:title="@string/navigation_bar_back_long_press_title"
+            android:entries="@array/hardware_keys_action_entries"
+            android:entryValues="@array/hardware_keys_action_values"
+            android:persistent="false" />
+
+        <ListPreference
+            android:key="navigation_home_long_press"
+            android:dialogTitle="@string/navigation_bar_home_long_press_title"
+            android:title="@string/navigation_bar_home_long_press_title"
+            android:entries="@array/hardware_keys_action_entries"
+            android:entryValues="@array/hardware_keys_action_values"
+            android:persistent="false" />
+
+        <ListPreference
+            android:key="navigation_home_double_tap"
+            android:dialogTitle="@string/navigation_bar_home_double_tap_title"
+            android:title="@string/navigation_bar_home_double_tap_title"
+            android:entries="@array/hardware_keys_action_entries"
+            android:entryValues="@array/hardware_keys_action_values"
+            android:persistent="false" />
+
+        <ListPreference
+            android:key="navigation_app_switch_long_press"
+            android:dialogTitle="@string/navigation_bar_app_switch_long_press_title"
+            android:title="@string/navigation_bar_app_switch_long_press_title"
+            android:entries="@array/hardware_keys_action_entries"
+            android:entryValues="@array/hardware_keys_action_values"
+            android:persistent="false" />
+
+        <ListPreference
+            android:key="navigation_bar_edge_long_swipe"
+            android:dialogTitle="@string/navigation_bar_edge_long_swipe_title"
+            android:title="@string/navigation_bar_edge_long_swipe_title"
+            android:entries="@array/hardware_keys_action_entries"
+            android:entryValues="@array/hardware_keys_action_values"
+            android:persistent="false" />
+
+    </PreferenceCategory>
 
     <PreferenceCategory
         android:title="@string/status_bar_icons_title">
@@ -112,6 +167,18 @@
             android:summary="@string/status_bar_toggle_brightness_summary"
             android:defaultValue="false" />
         -->
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/status_bar_quick_settings_category">
+
+        <lineageos.preference.LineageSystemSettingListPreference
+            android:key="qs_quick_pulldown"
+            android:title="@string/status_bar_quick_qs_pulldown_title"
+            android:entries="@array/status_bar_quick_qs_pulldown_entries"
+            android:entryValues="@array/status_bar_quick_qs_pulldown_values"
+            android:defaultValue="0" />
+
     </PreferenceCategory>
 
 </PreferenceScreen>
