@@ -28,11 +28,38 @@ public class ButtonCombinationSettings extends SettingsPreferenceFragment
 
     private static final String TAG = "ButtonCombinationSettings";
 
+    private static final String CUSTOM_GESTURE_ACTION_SCREENSHOT = "screenshot";
+    private static final String KEY_PARTIAL_SCRENSHOT = "click_partial_screenshot";
+
+    private String mPowerVolDownAction;
+
+    private SwitchPreference mPartialScreenshot;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         addPreferencesFromResource(R.xml.button_combination_settings);
+
+        mPowerVolDownAction = Settings.Secure.getStringForUser(
+                resolver, Settings.Secure.POWER_VOL_DOWN_ACTION, UserHandle.USER_CURRENT);
+
+        mPartialScreenshot = findPreference(KEY_PARTIAL_SCREENSHOT);
+
+        updatePartialScreenshot();
+    }
+
+    private void updatePartialScreenshot() {
+        if (isPowerVolDownScreenshot) {
+            mPartialScreenshot.setVisible(true)
+        } else {
+            mPartialScreenshot.setVisible(false)
+        }
+    }
+
+    private static boolean isPowerVolDownScreenshot(Context context) {
+        return mPowerVolDownAction != null
+            && CUSTOM_GESTURE_ACTION_SCREENSHOT.equals(mPowerVolDownAction);
     }
 
     @Override
@@ -40,6 +67,25 @@ public class ButtonCombinationSettings extends SettingsPreferenceFragment
         return TAG;
     }
 
-    public static final BaseSearchIndexProvider SEARCH_INDEX_DATA_PROVIDER =
-            new BaseSearchIndexProvider(R.xml.button_combination_settings);
+    @Override
+    public boolean onPreferenceChange(Preference preference, Object newValue) {
+        if (preference == mPowerVolDownAction) {
+            updatePartialScreenshot();
+            return true;
+        }
+    return false;
+    }
+
+    public static final Searchable.SearchIndexProvider SEARCH_INDEX_DATA_PROVIDER =
+            new BaseSearchIndexProvider() {
+
+        @Override
+        public Set<String> getNonIndexableKeys(Context context) {
+            final Set<String> result = new ArraySet<>();
+
+            if (isPowerVolDownScreenshot) {
+                result.add(KEY_PARTIAL_SCRENSHOT);
+            }
+        }
+    }
 }
