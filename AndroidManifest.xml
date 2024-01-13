@@ -108,15 +108,15 @@
             </intent-filter>
         </activity-alias>
 
-        <!-- Status bar settings (System category) -->
+        <!-- System UI tuner settings (System category) -->
         <activity-alias
-            android:name=".statusbar.StatusBarSettings"
+            android:name=".systemui.SystemUITunerSettings"
             android:exported="true"
-            android:label="@string/status_bar_title"
+            android:label="@string/system_ui_tuner_title"
             android:targetActivity="PartsActivity">
             <intent-filter>
                 <action android:name="com.android.settings.action.IA_SETTINGS" />
-                <action android:name="org.lineageos.lineageparts.STATUS_BAR_SETTINGS" />
+                <action android:name="org.lineageos.lineageparts.SYSTEM_UI_TUNER_SETTINGS" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
 
@@ -125,7 +125,7 @@
                 android:value="com.android.settings.category.ia.system" />
             <meta-data
                 android:name="com.android.settings.icon"
-                android:resource="@drawable/ic_settings_statusbar" />
+                android:resource="@drawable/ic_settings_systemuituner" />
             <meta-data
                 android:name="com.android.settings.icon_tintable"
                 android:value="true" />

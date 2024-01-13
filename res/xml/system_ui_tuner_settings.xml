@@ -7,8 +7,8 @@
 <PreferenceScreen
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:lineage="http://schemas.android.com/apk/res-auto"
-    android:key="status_bar_settings"
-    android:title="@string/status_bar_title">
+    android:key="system_ui_tuner_settings"
+    android:title="@string/system_ui_tuner_title">
 
     <PreferenceCategory
         android:key="navigation_bar_category"

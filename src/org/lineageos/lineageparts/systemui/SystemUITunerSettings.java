@@ -3,7 +3,7 @@
  * SPDX-FileCopyrightText: 2017-2023 The LineageOS Project
  * SPDX-License-Identifier: Apache-2.0
  */
-package org.lineageos.lineageparts.statusbar;
+package org.lineageos.lineageparts.systemui;
 
 import static android.view.WindowManagerPolicyConstants.NAV_BAR_MODE_2BUTTON;
 import static android.view.WindowManagerPolicyConstants.NAV_BAR_MODE_GESTURAL_OVERLAY;
@@ -50,7 +50,7 @@ import java.util.Set;
 import lineageos.preference.LineageSystemSettingListPreference;
 import lineageos.providers.LineageSettings;
 
-public class StatusBarSettings extends SettingsPreferenceFragment
+public class SystemUITunerSettings extends SettingsPreferenceFragment
         implements Preference.OnPreferenceChangeListener{
     private static final String TAG = "SystemSettings";
 
@@ -107,7 +107,7 @@ public class StatusBarSettings extends SettingsPreferenceFragment
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        addPreferencesFromResource(R.xml.status_bar_settings);
+        addPreferencesFromResource(R.xml.system_ui_tuner_settings);
 
         final Resources res = getResources();
         final ContentResolver resolver = requireActivity().getContentResolver();
