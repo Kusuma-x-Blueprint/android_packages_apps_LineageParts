@@ -415,11 +415,14 @@ public class StatusBarSettings extends SettingsPreferenceFragment
                     mNavigationPreferencesCat.addPreference(mEdgeLongSwipeAction);
 
                     mNavigationPreferencesCat.removePreference(mNavigationArrowKeys);
+                    mNavigationPreferencesCat.removePreference(mNavBarInverse);
                     mNavigationPreferencesCat.removePreference(mNavigationBackLongPressAction);
                     mNavigationPreferencesCat.removePreference(mNavigationHomeLongPressAction);
                     mNavigationPreferencesCat.removePreference(mNavigationHomeDoubleTapAction);
                     mNavigationPreferencesCat.removePreference(mNavigationAppSwitchLongPressAction);
                 } else if (DeviceUtils.isSwipeUpEnabled(getContext())) {
+                    mNavigationPreferencesCat.addPreference(mNavigationArrowKeys);
+                    mNavigationPreferencesCat.addPreference(mNavBarInverse);
                     mNavigationPreferencesCat.addPreference(mNavigationBackLongPressAction);
                     mNavigationPreferencesCat.addPreference(mNavigationHomeLongPressAction);
                     mNavigationPreferencesCat.addPreference(mNavigationHomeDoubleTapAction);
@@ -427,6 +430,8 @@ public class StatusBarSettings extends SettingsPreferenceFragment
                     mNavigationPreferencesCat.removePreference(mNavigationAppSwitchLongPressAction);
                     mNavigationPreferencesCat.removePreference(mEdgeLongSwipeAction);
                 } else {
+                    mNavigationPreferencesCat.addPreference(mNavigationArrowKeys);
+                    mNavigationPreferencesCat.addPreference(mNavBarInverse);
                     mNavigationPreferencesCat.addPreference(mNavigationBackLongPressAction);
                     mNavigationPreferencesCat.addPreference(mNavigationHomeLongPressAction);
                     mNavigationPreferencesCat.addPreference(mNavigationHomeDoubleTapAction);
@@ -458,15 +463,20 @@ public class StatusBarSettings extends SettingsPreferenceFragment
 
             if (hasNavigationBar()) {
                 if (DeviceUtils.isEdgeToEdgeEnabled(context)) {
+                    result.add(KEY_EDGE_LONG_SWIPE);
+                } else if (DeviceUtils.isSwipeUpEnabled(context)) {
                     result.add(KEY_NAVIGATION_ARROW_KEYS);
+                    result.add(KEY_NAV_BAR_INVERSE);
+                    result.add(KEY_NAVIGATION_BACK_LONG_PRESS);
+                    result.add(KEY_NAVIGATION_HOME_LONG_PRESS);
+                    result.add(KEY_NAVIGATION_HOME_DOUBLE_TAP);
+                } else {
+                    result.add(KEY_NAVIGATION_ARROW_KEYS);
+                    result.add(KEY_NAV_BAR_INVERSE);
+                    result.add(KEY_NAVIGATION_BACK_LONG_PRESS);
                     result.add(KEY_NAVIGATION_HOME_LONG_PRESS);
                     result.add(KEY_NAVIGATION_HOME_DOUBLE_TAP);
                     result.add(KEY_NAVIGATION_APP_SWITCH_LONG_PRESS);
-                } else if (DeviceUtils.isSwipeUpEnabled(context)) {
-                    result.add(KEY_NAVIGATION_APP_SWITCH_LONG_PRESS);
-                    result.add(KEY_EDGE_LONG_SWIPE);
-                } else {
-                    result.add(KEY_EDGE_LONG_SWIPE);
                 }
             }
             return result;
