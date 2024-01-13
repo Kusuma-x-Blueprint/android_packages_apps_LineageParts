@@ -28,23 +28,11 @@
         android:dialogTitle="@string/button_backlight_title"
         android:persistent="false" />
 
-    <PreferenceScreen
-        android:key="button_combinations"
+    <Preference
+        android:key="button_combination_settings"
         android:title="@string/button_combination_title"
-        android:summary="@string/button_combination_summary">
-        <intent
-            android:action="android.intent.action.MAIN"
-            android:targetPackage="com.android.settings"
-            android:targetClass="com.android.settings.gestures.ButtonCombinationSettings">
-            <extra android:name="gestures" android:value="button_combination_screen" />
-        </intent>
-    </PreferenceScreen>
-
-    <lineageos.preference.LineageSystemSettingSwitchPreference
-        android:key="click_partial_screenshot"
-        android:title="@string/click_partial_screenshot_title"
-        android:summary="@string/click_partial_screenshot_summary"
-       android:defaultValue="false" />
+        android:summary="@string/button_combination_summary" 
+        android:fragment="org.lineageos.lineageparts.input.ButtonCombinationSettings" />
 
     <PreferenceCategory
         android:key="power_key"

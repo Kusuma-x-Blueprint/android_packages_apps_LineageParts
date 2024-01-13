@@ -90,4 +90,10 @@
           android:title="@string/trust_title"
           android:fragment="org.lineageos.lineageparts.trust.TrustPreferences"
           lineage:xmlRes="@xml/trust_preferences" />
+
+    <part android:key="button_combination_settings"
+          android:title="@string/button_combination_title"
+          android:summary="@string/button_combination_summary"
+          android:fragment="org.lineageos.lineageparts.input.ButtonCombinationSettings"
+          lineage:xmlRes="@xml/button_combination_settings" /
 </parts-catalog>

@@ -24,4 +24,44 @@
 
     <!-- System UI tuner settings -->
     <string name="system_ui_tuner_title">System UI tuner</string>
+
+    <!-- Custom gesture actions -->
+    <!-- Action names -->
+    <string name="custom_gesture_action_name_none">None</string>
+    <string name="custom_gesture_action_name_camera">Open camera</string>
+    <string name="custom_gesture_action_name_screenshot">Screenshot</string>
+    <string name="custom_gesture_action_name_ringer_normal">Set ringer mode to normal</string>
+    <string name="custom_gesture_action_name_ringer_vibrate">Set ringer mode to vibrate</string>
+    <string name="custom_gesture_action_name_ringer_silent">Set ringer mode to silent</string>
+    <string name="custom_gesture_action_name_ringer_cycle">Cycle through ringer modes</string>
+
+    <!-- Action values -->
+    <string name="custom_gesture_action_value_none" translatable="false">none</string>
+    <string name="custom_gesture_action_value_camera" translatable="false">camera</string>
+    <string name="custom_gesture_action_value_screenshot" translatable="false">screenshot</string>
+    <string name="custom_gesture_action_value_ringer_normal" translatable="false">ringermode:normal</string>
+    <string name="custom_gesture_action_value_ringer_vibrate" translatable="false">ringermode:vibrate</string>
+    <string name="custom_gesture_action_value_ringer_silent" translatable="false">ringermode:silent</string>
+    <string name="custom_gesture_action_value_ringer_cycle" translatable="false">ringermode:cycle</string>
+
+    <!-- Power double tap action -->
+    <string name="power_double_tap_action_title">Double press power button</string>
+
+    <!-- Power + vol down action -->
+    <string name="power_vol_down_action_title">Press power and volume down button</string>
+
+    <!-- Key combination wakeup -->
+    <string name="key_combination_wakeup_title">Always enable button combinations</string>
+    <string name="key_combination_wakeup_desc">Quick actions always be performed, even when the screen is off. This makes accidental triggering more likely.</string>
+
+    <!-- Power + vol up action -->
+    <string name="power_vol_up_action_title">Press power and volume up button</string>
+
+    <!-- Vol up + vol down action -->
+    <string name="vol_up_down_action_title">Press volume up and volume down button</string>
+    <string name="vol_up_down_action_none">Accessibility shortcuts</string>
+
+    <!-- Button combination settings -->
+    <string name="button_combination_title">Button combinations</string>
+    <string name="button_combination_summary">Perform various button combinations for quick actions</string>
 </resources>
