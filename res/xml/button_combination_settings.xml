@@ -25,7 +25,6 @@
 
     <com.android.settingslib.widget.IllustrationPreference
         android:key="button_combination_video" 
-        settings:searchable="true"
         app:lottie_rawRes="@raw/lottie_button_combination" />
 
     <lineageos.preference.SecureSettingListPreference

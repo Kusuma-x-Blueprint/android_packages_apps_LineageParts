@@ -95,5 +95,5 @@
           android:title="@string/button_combination_title"
           android:summary="@string/button_combination_summary"
           android:fragment="org.lineageos.lineageparts.input.ButtonCombinationSettings"
-          lineage:xmlRes="@xml/button_combination_settings" /
+          lineage:xmlRes="@xml/button_combination_settings" />
 </parts-catalog>

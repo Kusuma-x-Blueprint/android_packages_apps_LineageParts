@@ -18,10 +18,6 @@
     <!-- Quick settings category -->
     <string name="status_bar_quick_settings_category">Quick settings</string>
 
-    <!-- Button combination settings -->
-    <string name="button_combination_title">Button combinations</string>
-    <string name="button_combination_summary">Perform various button combinations for quick actions</string>
-
     <!-- System UI tuner settings -->
     <string name="system_ui_tuner_title">System UI tuner</string>
 
