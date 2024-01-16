@@ -237,6 +237,7 @@ public class ButtonSettings extends SettingsPreferenceFragment
         mNavigationArrowKeys = findPreference(KEY_NAVIGATION_ARROW_KEYS);
 
         // Navigation bar customization
+        mNavBarInverse = findPreference(KEY_NAV_BAR_INVERSE);
         mNavBarLayout = findPreference(KEY_NAV_BAR_LAYOUT);
 
         // Navigation bar back long press
@@ -461,8 +462,6 @@ public class ButtonSettings extends SettingsPreferenceFragment
             mSwapCapacitiveKeys.setOnPreferenceChangeListener(this);
             mSwapCapacitiveKeys.setDependency(KEY_DISABLE_NAV_KEYS);
         }
-
-        mNavBarInverse = findPreference(KEY_NAV_BAR_INVERSE);
 
         mEnableTaskbar = findPreference(KEY_ENABLE_TASKBAR);
         if (mEnableTaskbar != null) {
@@ -746,6 +745,7 @@ public class ButtonSettings extends SettingsPreferenceFragment
                     mNavigationPreferencesCat.addPreference(mEdgeLongSwipeAction);
 
                     mNavigationPreferencesCat.removePreference(mNavigationArrowKeys);
+                    mNavigationPreferencesCat.removePreference(mNavBarInverse);
                     mNavigationPreferencesCat.removePreference(mNavBarLayout);
                     mNavigationPreferencesCat.removePreference(mNavigationBackLongPressAction);
                     mNavigationPreferencesCat.removePreference(mNavigationHomeLongPressAction);
@@ -998,6 +998,7 @@ public class ButtonSettings extends SettingsPreferenceFragment
             if (hasNavigationBar()) {
                 if (DeviceUtils.isEdgeToEdgeEnabled(context)) {
                     result.add(KEY_NAVIGATION_ARROW_KEYS);
+                    result.add(KEY_NAV_BAR_INVERSE);
                     result.add(KEY_NAV_BAR_LAYOUT);
                     result.add(KEY_NAVIGATION_HOME_LONG_PRESS);
                     result.add(KEY_NAVIGATION_HOME_DOUBLE_TAP);
