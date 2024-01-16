@@ -100,6 +100,7 @@ public class ButtonSettings extends SettingsPreferenceFragment
             "click_partial_screenshot";
     private static final String KEY_SWAP_CAPACITIVE_KEYS = "swap_capacitive_keys";
     private static final String KEY_NAV_BAR_INVERSE = "sysui_nav_bar_inverse";
+    private static final String KEY_NAV_BAR_LAYOUT = "navbar_layout_views";
     private static final String KEY_ENABLE_TASKBAR = "enable_taskbar";
 
     private static final String CATEGORY_POWER = "power_key";
@@ -139,6 +140,7 @@ public class ButtonSettings extends SettingsPreferenceFragment
     private ListPreference mTorchLongPressPowerTimeout;
     private SwitchPreference mSwapCapacitiveKeys;
     private SwitchPreference mNavBarInverse;
+    private ListPreference mNavBarLayout;
     private SwitchPreference mEnableTaskbar;
 
     private PreferenceCategory mNavigationPreferencesCat;
@@ -233,6 +235,9 @@ public class ButtonSettings extends SettingsPreferenceFragment
 
         // Navigation bar arrow keys while typing
         mNavigationArrowKeys = findPreference(KEY_NAVIGATION_ARROW_KEYS);
+
+        // Navigation bar customization
+        mNavBarLayout = findPreference(KEY_NAV_BAR_LAYOUT);
 
         // Navigation bar back long press
         mNavigationBackLongPressAction = initList(KEY_NAVIGATION_BACK_LONG_PRESS,
@@ -684,6 +689,7 @@ public class ButtonSettings extends SettingsPreferenceFragment
     private void toggleTaskBarDependencies(boolean enabled) {
         enablePreference(mNavigationArrowKeys, !enabled);
         enablePreference(mNavBarInverse, !enabled);
+        enablePreference(mNavBarLayout, !enabled);
         enablePreference(mNavigationBackLongPressAction, !enabled);
         enablePreference(mNavigationHomeLongPressAction, !enabled);
         enablePreference(mNavigationHomeDoubleTapAction, !enabled);
@@ -740,6 +746,7 @@ public class ButtonSettings extends SettingsPreferenceFragment
                     mNavigationPreferencesCat.addPreference(mEdgeLongSwipeAction);
 
                     mNavigationPreferencesCat.removePreference(mNavigationArrowKeys);
+                    mNavigationPreferencesCat.removePreference(mNavBarLayout);
                     mNavigationPreferencesCat.removePreference(mNavigationBackLongPressAction);
                     mNavigationPreferencesCat.removePreference(mNavigationHomeLongPressAction);
                     mNavigationPreferencesCat.removePreference(mNavigationHomeDoubleTapAction);
@@ -991,6 +998,7 @@ public class ButtonSettings extends SettingsPreferenceFragment
             if (hasNavigationBar()) {
                 if (DeviceUtils.isEdgeToEdgeEnabled(context)) {
                     result.add(KEY_NAVIGATION_ARROW_KEYS);
+                    result.add(KEY_NAV_BAR_LAYOUT);
                     result.add(KEY_NAVIGATION_HOME_LONG_PRESS);
                     result.add(KEY_NAVIGATION_HOME_DOUBLE_TAP);
                     result.add(KEY_NAVIGATION_APP_SWITCH_LONG_PRESS);
