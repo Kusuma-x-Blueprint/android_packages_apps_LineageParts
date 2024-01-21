@@ -42,6 +42,12 @@
                 android:summary="@string/navigation_bar_arrow_keys_summary"
                 android:defaultValue="false" />
 
+        <lineageos.preference.SecureSettingSwitchPreference
+            android:key="navbar_pulse_enabled"
+            android:title="@string/show_navbar_pulse_title"
+            android:summary="@string/show_navbar_pulse_summary"
+            android:defaultValue="default" />
+
         <lineageos.preference.SecureSettingListPreference
                 android:key="navbar_layout_views"
                 android:title="@string/navbar_layout_title"

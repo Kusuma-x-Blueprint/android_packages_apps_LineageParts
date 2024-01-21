@@ -101,6 +101,7 @@ public class ButtonSettings extends SettingsPreferenceFragment
     private static final String KEY_SWAP_CAPACITIVE_KEYS = "swap_capacitive_keys";
     private static final String KEY_NAV_BAR_INVERSE = "sysui_nav_bar_inverse";
     private static final String KEY_NAV_BAR_LAYOUT = "navbar_layout_views";
+    private static final String KEY_NAV_BAR_PULSE = "navbar_pulse_enabled";
     private static final String KEY_ENABLE_TASKBAR = "enable_taskbar";
 
     private static final String CATEGORY_POWER = "power_key";
@@ -141,6 +142,7 @@ public class ButtonSettings extends SettingsPreferenceFragment
     private SwitchPreference mSwapCapacitiveKeys;
     private SwitchPreference mNavBarInverse;
     private ListPreference mNavBarLayout;
+    private SwitchPreference mNavBarPulse;
     private SwitchPreference mEnableTaskbar;
 
     private PreferenceCategory mNavigationPreferencesCat;
@@ -239,6 +241,7 @@ public class ButtonSettings extends SettingsPreferenceFragment
         // Navigation bar customization
         mNavBarInverse = findPreference(KEY_NAV_BAR_INVERSE);
         mNavBarLayout = findPreference(KEY_NAV_BAR_LAYOUT);
+        mNavBarPulse = findPreference(KEY_NAV_BAR_PULSE);
 
         // Navigation bar back long press
         mNavigationBackLongPressAction = initList(KEY_NAVIGATION_BACK_LONG_PRESS,
@@ -689,6 +692,7 @@ public class ButtonSettings extends SettingsPreferenceFragment
         enablePreference(mNavigationArrowKeys, !enabled);
         enablePreference(mNavBarInverse, !enabled);
         enablePreference(mNavBarLayout, !enabled);
+        enablePreference(mNavBarPulse, !enabled);
         enablePreference(mNavigationBackLongPressAction, !enabled);
         enablePreference(mNavigationHomeLongPressAction, !enabled);
         enablePreference(mNavigationHomeDoubleTapAction, !enabled);
