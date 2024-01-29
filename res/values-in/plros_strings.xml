@@ -14,4 +14,15 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- Power menu -->
     <string name="power_menu_lockdown_title">Kunci total</string>
+
+    <!-- Navbar layout -->
+    <string name="navbar_layout_title">Tata letak</string>
+    <string name="navbar_layout_normal">Normal</string>
+    <string name="navbar_layout_compact">Kompak</string>
+    <string name="navbar_layout_leftleaning">Condong kiri</string>
+    <string name="navbar_layout_rightleaning">Condong kanan</string>
+
+    <!-- Pulse -->
+    <string name="show_navbar_pulse_title">Tampilkan Pulse</string>
+    <string name="show_navbar_pulse_summary">Grafik ekualiser audio di bilah navigasi</string>
 </resources>

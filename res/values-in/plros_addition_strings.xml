@@ -17,10 +17,11 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="trust_summary">Menjaga perangkat Anda tetap aman dan melindungi privasi Anda</string>
     <string name="trust_restrict_usb_summary">Kontrol dukungan untuk koneksi USB seperti earphones, perangkat penyimpanan, input (mouse, keyboard, joystick) dan ADB</string>
-    <string name="navigation_bar_invert_layout_summary">Balikkan tata letak bar navigasi dan item lainnya, seperti pengubah IME</string>
+    <string name="navigation_bar_invert_layout_summary">Balikkan tata letak bar navigasi dan item lainnya</string>
     <string name="click_partial_screenshot_title">Tekan untuk screenshot sebagian</string>
     <string name="click_partial_screenshot_summary">Tekan singkat tombol daya &amp; turunkan volume untuk mengambil screenshot sebagian</string>
     <string name="trust_feature_selinux_explain">SELinux menentukan proses apa saja yang dapat mengakses file/jalur dalam perangkat Anda.\nHal ini mencegah aplikasi dan layanan dari mengakses file yang tidak seharusnya. Dengan demikian, potensi proses yang berbahaya dapat dibatasi dan keamanan Anda tetap terjaga.</string>
     <string name="trust_feature_security_patches_explain">Patch keamanan dirilis setiap bulan oleh Google yang bekerja sama dengan vendor SoC untuk mengatasi kelemahan yang dapat dieksploitasi oleh aplikasi berbahaya untuk melewati batasan keamanan dan menyebabkan kerusakan permanen bagi perangkat Anda. Patch yang disediakan oleh Google diterapkan setiap bulan dalam semua perangkat yang didukung, tetapi patch untuk kode berpemilik hanya dapat diterapkan oleh produsen perangkat Anda. Untuk menjaga keamanan perangkat Anda, pastikan versi LineageOS Anda selalu diperbarui, dan (jika ada) pastikan vendor image Anda diperbarui ke versi terbaru yang direkomendasikan oleh LineageOS.</string>
     <string name="trust_feature_encryption_explain">Mengenkripsi perangkat dapat mencegah akses data ketika ponsel Anda tidak di-boot ke Android. Hal ini sangat penting terutama saat ponsel Anda tercuri karena dapat mencegah orang membaca pesan, kontak dan informasi pribadi lainnya tanpa kata sandi.\nUntuk membuat enkripsi lebih efektif, Anda perlu mengatur kata sandi layar kunci yang aman.</string>
+    <string name="live_display_summary">Optimalkan layar Anda sesuai waktu dan kondisi sekitar untuk meningkatkan keterbacaan dan mengurangi kelelahan mata</string>
 </resources>
