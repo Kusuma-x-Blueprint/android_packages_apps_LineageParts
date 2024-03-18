@@ -26,6 +26,7 @@
     <string name="disabled">Deaktiveret</string>
     <string name="enabled">Aktiveret</string>
     <string name="privacy_settings_title">Privatliv</string>
+    <string name="channel_light_settings_name">Eksempel på lysindstillinger</string>
     <string name="edit_light_settings">Rediger LED-indstillinger</string>
     <string name="pulse_speed_title">Blinklængde og hastighed</string>
     <string name="default_time">Normal</string>
@@ -373,7 +374,6 @@
     <string name="status_bar_brightness_slider_auto_title">Auto-lysstyrke</string>
     <string name="status_bar_brightness_slider_auto_summary">Vis skifter til adaptiv lysstyrke, nær skyderen</string>
     <string name="status_bar_brightness_slider_show_never">Vis aldrig</string>
-    <string name="status_bar_brightness_slider_show_always">Vis altid</string>
     <string name="status_bar_toggle_brightness">Lysstyrkekontrol</string>
     <string name="status_bar_toggle_brightness_summary">Justér lysstyrken, ved at stryge tværs over statusbjælken</string>
     <string name="network_traffic_settings_title">Netværkstrafikovervågning</string>
@@ -435,7 +435,6 @@
     <string name="display_rotation_90_title">90 grader</string>
     <string name="display_rotation_180_title">180 grader</string>
     <string name="display_rotation_270_title">270 grader</string>
-    <string name="long_screen_settings_title">Fuldskærms-apps</string>
     <string name="charging_sounds_settings_title">Opladningslyde</string>
     <string name="charging_sounds_enable_title">Aktivér opladningslyde</string>
     <string name="charging_sounds_summary">Afspil en lyd, når du tilslutter eller frakobler en strømkilde</string>
@@ -510,5 +509,4 @@
     <string name="trust_restrict_usb_disabled">Tillad altid USB-forbindelser</string>
     <string name="trust_summary">Hold din enhed sikker og beskyt dit privatliv</string>
     <string name="sms_security_check_limit_title">SMS-grænse</string>
-    <string name="sms_security_check_limit_always_confirm">Altid bekræft</string>
 </resources>
