@@ -520,10 +520,10 @@
                  <b>Last update:</b> <xliff:g id="date">%3$s</xliff:g>]]></string>
 
     <!-- Display : Rotation  -->
-    <string name="accelerometer_title">Auto-rotate screen</string>
-    <string name="display_rotation_title">Rotation settings</string>
-    <string name="display_rotation_enabled">Auto-rotation is enabled</string>
-    <string name="display_rotation_disabled">Auto-rotation is disabled</string>
+    <string name="accelerometer_title">Use auto-rotate</string>
+    <string name="display_rotation_title">Auto-rotate</string>
+    <string name="display_rotation_enabled">On</string>
+    <string name="display_rotation_disabled">Off</string>
     <string name="display_rotation_unit">degrees</string>
     <string name="display_lockscreen_rotation_title">Rotate lock screen</string>
     <string name="display_rotation_category_title">Rotation modes</string>
