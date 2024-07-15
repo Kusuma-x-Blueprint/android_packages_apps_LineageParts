@@ -45,4 +45,15 @@
 
     </PreferenceCategory>
 
+    <PreferenceCategory
+        android:key="other_rotation_category"
+        android:title="@string/other_rotation_category_title">
+
+        <lineageos.preference.extra.SystemSettingSwitchPreference
+            android:key="enable_rotation_button"
+            android:title="@string/floating_rotation_button_title"
+            android:defaultValue="true" />
+
+    </PreferenceCategory>
+
 </PreferenceScreen>
