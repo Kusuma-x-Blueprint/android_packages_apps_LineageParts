@@ -19,6 +19,7 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import org.lineageos.lineageparts.R;
 import org.lineageos.lineageparts.profiles.triggers.BluetoothTriggerFragment;
 import org.lineageos.lineageparts.profiles.triggers.NfcTriggerFragment;
+import org.lineageos.lineageparts.profiles.triggers.TimeTriggerFragment;
 import org.lineageos.lineageparts.profiles.triggers.WifiTriggerFragment;
 import com.google.android.collect.Lists;
 
@@ -139,7 +140,11 @@ public class TriggerPagerAdapter extends FragmentPagerAdapter {
         /**
          * The song fragment
          */
-        NFC(NfcTriggerFragment.class, R.string.profile_tabs_nfc);
+        NFC(NfcTriggerFragment.class, R.string.profile_tabs_nfc),
+        /**
+         * The genre fragment
+         */
+        TIME(TimeTriggerFragment.class, R.string.profile_tabs_time);
 
         private final Class<? extends Fragment> mFragmentClass;
         private final int mNameRes;

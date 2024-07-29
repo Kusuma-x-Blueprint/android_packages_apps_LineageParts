@@ -192,6 +192,7 @@ public class SetupActionsFragment extends SettingsPreferenceFragment
             if (DeviceUtils.deviceSupportsNfc(context)) {
                 mItems.add(generateTriggerItem(TriggerItem.NFC));
             }
+            mItems.add(generateTriggerItem(TriggerItem.TIME));
         }
 
         // connection overrides

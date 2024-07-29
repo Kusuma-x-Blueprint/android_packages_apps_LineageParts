@@ -9,4 +9,8 @@
     <!-- Floating rotation button -->
     <string name="other_rotation_category_title">Other rotation controls</string>
     <string name="floating_rotation_button_title">Rotation suggestion</string>
+
+    <!-- Profile -->
+    <string name="no_triggers_configured_time">Tap to setup a new time trigger</string>
+    <string name="profile_tabs_time">Time</string>
 </resources>

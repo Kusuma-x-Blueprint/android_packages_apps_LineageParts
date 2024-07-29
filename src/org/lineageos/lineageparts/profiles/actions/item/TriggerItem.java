@@ -19,6 +19,7 @@ public class TriggerItem extends Item {
     public static final int BLUETOOTH = 1;
     // not in Profile.TriggerType, but we need it.
     public static final int NFC = 2;
+    public static final int TIME = 3;
 
     private final Profile mProfile;
     private final int mTriggerType;
@@ -52,6 +53,8 @@ public class TriggerItem extends Item {
         if (sb.length() == 0) {
             if (mTriggerType == NFC) {
                 return context.getString(R.string.no_triggers_configured_nfc);
+            } else if (mTriggerType == TIME) {
+                return context.getString(R.string.no_triggers_configured_time);
             } else {
                 return context.getString(R.string.no_triggers_configured);
             }
@@ -68,6 +71,8 @@ public class TriggerItem extends Item {
                 return R.string.profile_tabs_bluetooth;
             case NFC:
                 return R.string.profile_tabs_nfc;
+            case TIME:
+                return R.string.profile_tabs_time;
             default: return 0;
         }
     }
