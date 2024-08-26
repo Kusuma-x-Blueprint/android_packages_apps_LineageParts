@@ -8,6 +8,7 @@ package org.lineageos.lineageparts.trust;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.SystemProperties;
 import android.provider.Settings;
 
 import androidx.appcompat.app.AlertDialog;
@@ -173,17 +174,24 @@ public class TrustPreferences extends SettingsPreferenceFragment {
         int summary;
         boolean isLegacy = getContext().getResources()
                 .getBoolean(org.lineageos.platform.internal.R.bool.config_trustLegacyEncryption);
-        if (level == TrustInterface.TRUST_FEATURE_LEVEL_GOOD) {
-            icon = R.drawable.ic_trust_encryption_good;
-            summary = R.string.trust_feature_encryption_value_enabled;
-        } else if (level == TrustInterface.TRUST_FEATURE_LEVEL_POOR) {
+        final boolean noFbe =
+                SystemProperties.getBoolean("persist.sys.extra.no_fbe_support", false);
+        if (noFbe) {
             icon = R.drawable.ic_trust_encryption_poor;
-            summary = R.string.trust_feature_encryption_value_nolock;
+            summary = R.string.trust_feature_encryption_value_not_supported;
         } else {
-            icon = isLegacy ?
-                R.drawable.ic_trust_encryption_poor :
-                R.drawable.ic_trust_encryption_bad;
-            summary = R.string.trust_feature_encryption_value_disabled;
+            if (level == TrustInterface.TRUST_FEATURE_LEVEL_GOOD) {
+                icon = R.drawable.ic_trust_encryption_good;
+                summary = R.string.trust_feature_encryption_value_enabled;
+            } else if (level == TrustInterface.TRUST_FEATURE_LEVEL_POOR) {
+                icon = R.drawable.ic_trust_encryption_poor;
+                summary = R.string.trust_feature_encryption_value_nolock;
+            } else {
+                icon = isLegacy ?
+                    R.drawable.ic_trust_encryption_poor :
+                    R.drawable.ic_trust_encryption_bad;
+                summary = R.string.trust_feature_encryption_value_disabled;
+            }
         }
         mEncryptionPref.setIcon(icon);
         mEncryptionPref.setSummary(getContext().getString(summary));

@@ -13,4 +13,7 @@
     <!-- Profile -->
     <string name="no_triggers_configured_time">Tap to setup a new time trigger</string>
     <string name="profile_tabs_time">Time</string>
+
+    <!-- Encryption -->
+    <string name="trust_feature_encryption_value_not_supported">Not supported</string>
 </resources>
