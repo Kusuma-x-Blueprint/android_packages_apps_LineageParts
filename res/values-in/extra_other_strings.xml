@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     SPDX-FileCopyrightText: 2024 Kusuma
+     SPDX-License-Identifier: Apache-2.0
+-->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <!-- Charging control settings -->
+    <string name="charging_control_mode_auto_summary">Secara otomatis menentukan kapan mulai mengisi daya berdasarkan alarm yang diatur</string>
+    <string name="charging_control_mode_custom_title">Jadwal khusus</string>
+    <string name="charging_control_mode_custom_summary">Setel target waktu untuk mengisi daya dengan penuh</string>
+    <string name="charging_control_mode_limit_title">Batas pengisian daya</string>
+    <string name="charging_control_mode_limit_summary">Batas pengisian daya ke persentase tertentu</string>
+    <string name="charging_control_start_time_summary">Kontrol pengisian daya diaktifkan saat Anda mulai mengisi daya setelah %s</string>
+    <string name="charging_control_target_time_title">Target waktu untuk mengisi daya dengan penuh</string>
+    <string name="charging_control_target_time_summary">Baterai akan terisi dengan penuh saat %s</string>
+    <string name="charging_control_limit_title">Batas</string>
+</resources>

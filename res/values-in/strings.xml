@@ -421,12 +421,12 @@
     <string name="preview_carrier_title">Operator</string>
     <string name="stats_collection_title">Kumpulan statistik</string>
     <string name="stats_collection_summary">Izinkan metrik pemasangan dan statistik perangkat untuk dikumpulkan</string>
-    <string name="accelerometer_title">Rotasi otomatis</string>
-    <string name="display_rotation_title">Setelan rotasi</string>
-    <string name="display_rotation_enabled">Rotasi otomatis aktif</string>
-    <string name="display_rotation_disabled">Rotasi otomatis tidak aktif</string>
+    <string name="accelerometer_title">Gunakan putar otomatis</string>
+    <string name="display_rotation_title">Putar otomatis</string>
+    <string name="display_rotation_enabled">Aktif</string>
+    <string name="display_rotation_disabled">Nonaktif</string>
     <string name="display_rotation_unit">derajat</string>
-    <string name="display_lockscreen_rotation_title">Rotasi layar kunci</string>
+    <string name="display_lockscreen_rotation_title">Putar layar kunci</string>
     <string name="display_rotation_category_title">Mode rotasi</string>
     <string name="display_rotation_0_title">0 derajat</string>
     <string name="display_rotation_90_title">90 derajat</string>
