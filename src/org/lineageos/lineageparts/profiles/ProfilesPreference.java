@@ -6,124 +6,254 @@
 
 package org.lineageos.lineageparts.profiles;
 
-import android.content.ActivityNotFoundException;
+import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.database.ContentObserver;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.text.TextUtils;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
 
-import androidx.preference.CheckBoxPreference;
-import androidx.preference.PreferenceViewHolder;
+import androidx.preference.Preference;
+import androidx.preference.PreferenceCategory;
+import androidx.preference.PreferenceScreen;
+
+import com.android.settingslib.core.AbstractPreferenceController;
+import com.android.settingslib.core.lifecycle.Lifecycle;
+import com.android.settingslib.core.lifecycle.LifecycleObserver;
+import com.android.settingslib.core.lifecycle.events.OnPause;
+import com.android.settingslib.core.lifecycle.events.OnResume;
+import com.android.settingslib.widget.SelectorWithWidgetPreference;
+
+import java.util.UUID;
 
 import org.lineageos.lineageparts.PartsActivity;
+import org.lineageos.lineageparts.PreferenceControllerMixin;
 import org.lineageos.lineageparts.R;
-import org.lineageos.lineageparts.SettingsPreferenceFragment;
 
-public class ProfilesPreference extends CheckBoxPreference implements View.OnClickListener {
-    private static final String TAG = ProfilesPreference.class.getSimpleName();
-    private static final float DISABLED_ALPHA = 0.4f;
-    private final SettingsPreferenceFragment mFragment;
-    private final Bundle mSettingsBundle;
+import lineageos.app.Profile;
+import lineageos.app.ProfileManager;
+import lineageos.providers.LineageSettings;
 
-    // constant value that can be used to check return code from sub activity.
+public class ProfilesPreference extends AbstractPreferenceController
+        implements SelectorWithWidgetPreference.OnClickListener, LifecycleObserver,
+        OnResume, OnPause, PreferenceControllerMixin {
+
+    private final String KEY = "profiles_preference";
+
+    private final Context mContext;
+
     private static final int PROFILE_DETAILS = 1;
 
-    private ImageView mProfilesSettingsButton;
-    private TextView mTitleText;
-    private TextView mSummaryText;
-    private View mProfilesPref;
+    private ProfileChangeReceiver mProfileChangeReceiver;
+    private ProfileManager mProfileManager;
+    private SettingObserver mSettingObserver;
 
-    public ProfilesPreference(SettingsPreferenceFragment fragment, Bundle settingsBundle) {
-        super(fragment.getActivity(), null, R.style.ProfilesPreferenceStyle);
-        setLayoutResource(R.layout.preference_profiles);
-        setWidgetLayoutResource(R.layout.preference_profiles_widget);
-        mFragment = fragment;
-        mSettingsBundle = settingsBundle;
-    }
+    PreferenceScreen mScreen;
 
-    @Override
-    public void onBindViewHolder(PreferenceViewHolder holder) {
-        super.onBindViewHolder(holder);
+    private int nextPreferenceOrder = 0;
 
-        mProfilesPref = holder.findViewById(R.id.profiles_pref);
-        mProfilesPref.setOnClickListener(this);
-        mProfilesSettingsButton = (ImageView)holder.findViewById(R.id.profiles_settings);
-        mTitleText = (TextView)holder.findViewById(android.R.id.title);
-        mSummaryText = (TextView)holder.findViewById(android.R.id.summary);
+    public ProfilesPreference(Context context, Lifecycle lifecycle) {
+        super(context);
+        mContext = context;
+        mProfileManager = ProfileManager.getInstance(mContext);
 
-        if (mSettingsBundle != null) {
-            mProfilesSettingsButton.setOnClickListener(this);
-            updatePreferenceViews();
-        } else {
-            mProfilesSettingsButton.setVisibility(View.GONE);
+        if (lifecycle != null) {
+            lifecycle.addObserver(this);
         }
     }
 
     @Override
-    public void onClick(View view) {
-        if (view == mProfilesSettingsButton) {
-            try {
-                startProfileConfigActivity();
-            } catch (ActivityNotFoundException e) {
-                // If the settings activity does not exist, we can just do nothing...
-            }
-        } else if (view == mProfilesPref) {
-            if (isEnabled() && !isChecked()) {
-                setChecked(true);
-                callChangeListener(getKey());
+    public void displayPreference(PreferenceScreen screen) {
+        super.displayPreference(screen);
+        mScreen = screen;
+        refreshList();
+        mProfileChangeReceiver = new ProfileChangeReceiver();
+        mSettingObserver = new SettingObserver(screen);
+    }
+
+    @Override
+    public boolean isAvailable() {
+        return true;
+    }
+
+    @Override
+    public String getPreferenceKey() {
+        return KEY;
+    }
+
+    @Override
+    public void onResume() {
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(ProfileManager.INTENT_ACTION_PROFILE_SELECTED);
+        filter.addAction(ProfileManager.INTENT_ACTION_PROFILE_UPDATED);
+        if (mProfileChangeReceiver != null) {
+            mContext.registerReceiver(mProfileChangeReceiver, filter);
+        }
+        if (mSettingObserver != null) {
+            mSettingObserver.register(mContext.getContentResolver());
+            mSettingObserver.onChange(false, null);
+        }
+        refreshList();
+    }
+
+    @Override
+    public void onPause() {
+        if (mProfileChangeReceiver != null) {
+            mContext.unregisterReceiver(mProfileChangeReceiver);
+        }
+        if (mSettingObserver != null) {
+            mSettingObserver.unregister(mContext.getContentResolver());
+        }
+    }
+
+    @Override
+    public void onRadioButtonClicked(SelectorWithWidgetPreference preference) {
+        String selectedKey = preference.getKey();
+        setSelectedProfile(selectedKey);
+        if (mScreen != null) {
+            for (int i = 0; i < mScreen.getPreferenceCount(); i++) {
+                Preference pref = mScreen.getPreference(i);
+                if (pref instanceof SelectorWithWidgetPreference) {
+                    updateState(pref);
+                }
             }
         }
     }
 
     @Override
-    public void setEnabled(boolean enabled) {
-        super.setEnabled(enabled);
-        if (enabled) {
-            updatePreferenceViews();
-        } else {
-            disablePreferenceViews();
+    public void updateState(Preference preference) {
+        int profilesEnabled = LineageSettings.System.getInt(mContext.getContentResolver(),
+                LineageSettings.System.SYSTEM_PROFILES_ENABLED, 1);
+
+        // Get active profile, if null
+        Profile prof = mProfileManager.getActiveProfile();
+        String selectedKey = prof != null ? prof.getUuid().toString() : null;
+
+        if (preference instanceof SelectorWithWidgetPreference) {
+            SelectorWithWidgetPreference pref = (SelectorWithWidgetPreference) preference;
+            if (profilesEnabled == 0) {
+                pref.setEnabled(false);
+                pref.setChecked(false);
+            } else {
+            pref.setEnabled(true);
+                if (TextUtils.equals(selectedKey, pref.getKey())) {
+                    pref.setChecked(true);
+                } else {
+                    pref.setChecked(false);
+                }
+            }
+        }
+    }
+    
+    public void refreshList() {
+        for (int i = 0; i < mScreen.getPreferenceCount(); i++) {
+            Preference preference = mScreen.getPreference(i);
+            if (preference instanceof SelectorWithWidgetPreference) {
+                mScreen.removePreference(preference);
+                i--; // Adjust index due to removal
+            }
+        }
+
+        for (Profile profile : mProfileManager.getProfiles()) {
+            Bundle args = new Bundle();
+            args.putParcelable(ProfilesSettings.EXTRA_PROFILE, profile);
+            args.putBoolean(ProfilesSettings.EXTRA_NEW_PROFILE, false);
+    
+            SelectorWithWidgetPreference ppref = new SelectorWithWidgetPreference(mContext);
+            ppref.setKey(profile.getUuid().toString());
+            ppref.setTitle(profile.getName());
+            ppref.setOnClickListener(this);
+            ppref.setExtraWidgetOnClickListener(v -> startProfileConfigActivity(args));
+    
+            // Update the state of the preference based on the active profile
+            updateState(ppref);
+    
+            // Set the order of the new preference based on the main switch
+            if (nextPreferenceOrder == 0) {
+                Preference mainSwitch = mScreen.findPreference("mProfilesSettingsMainSwitch");
+                if (mainSwitch != null) {
+                    nextPreferenceOrder = mainSwitch.getOrder() + 1; // Start order after the switch
+                } else {
+                    nextPreferenceOrder = 1; // Fallback if the switch isn't found
+                }
+            }
+    
+            // Set the order and add the new preference
+            ppref.setOrder(nextPreferenceOrder);
+            nextPreferenceOrder++;
+    
+            mScreen.addPreference(ppref); 
+        }
+    }
+    
+    private void startProfileConfigActivity(Bundle args) {
+        if (mContext instanceof PartsActivity) {
+            PartsActivity pa = (PartsActivity) mContext;
+            pa.startPreferencePanel(SetupActionsFragment.class.getCanonicalName(), args,
+                    R.string.profile_profile_manage, null, null, PROFILE_DETAILS);
         }
     }
 
-    private void disablePreferenceViews() {
-        if (mProfilesSettingsButton != null) {
-            mProfilesSettingsButton.setEnabled(false);
-            mProfilesSettingsButton.setAlpha(DISABLED_ALPHA);
-        }
-        if (mProfilesPref != null) {
-            mProfilesPref.setEnabled(false);
-            mProfilesPref.setBackgroundColor(0);
+    private void setSelectedProfile(String key) {
+        try {
+            UUID selectedUuid = UUID.fromString(key);
+            mProfileManager.setActiveProfile(selectedUuid);
+        } catch (IllegalArgumentException ex) {
+            ex.printStackTrace();
         }
     }
 
-    private void updatePreferenceViews() {
-        final boolean checked = isChecked();
-        if (mProfilesSettingsButton != null) {
-            mProfilesSettingsButton.setEnabled(true);
-            mProfilesSettingsButton.setClickable(true);
-            mProfilesSettingsButton.setFocusable(true);
-        }
-        if (mTitleText != null) {
-            mTitleText.setEnabled(true);
-        }
-        if (mSummaryText != null) {
-            mSummaryText.setEnabled(checked);
-        }
-        if (mProfilesPref != null) {
-            mProfilesPref.setEnabled(true);
-            mProfilesPref.setLongClickable(checked);
-            final boolean enabled = isEnabled();
-            mProfilesPref.setOnClickListener(enabled ? this : null);
-            if (!enabled) {
-                mProfilesPref.setBackgroundColor(0);
+    public class ProfileChangeReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (ProfileManager.INTENT_ACTION_PROFILE_SELECTED.equals(action)
+                    || ProfileManager.INTENT_ACTION_PROFILE_UPDATED.equals(intent.getAction())) {
+                if (mScreen != null) {
+                    for (int i = 0; i < mScreen.getPreferenceCount(); i++) {
+                        Preference pref = mScreen.getPreference(i);
+                        updateState(pref);
+                    }
+                }
             }
         }
     }
 
-    // utility method used to start sub activity
-    private void startProfileConfigActivity() {
-        PartsActivity pa = (PartsActivity) mFragment.requireActivity();
-        pa.startPreferencePanel(SetupActionsFragment.class.getCanonicalName(), mSettingsBundle,
-                R.string.profile_profile_manage, null, null, PROFILE_DETAILS);
+    private class SettingObserver extends ContentObserver {
+        private final Uri URI_SYSTEM_PROFILES_ENABLED = 
+                LineageSettings.System.getUriFor(LineageSettings.System.SYSTEM_PROFILES_ENABLED);
+
+        private final PreferenceScreen mScreen;
+
+        SettingObserver(PreferenceScreen screen) {
+            super(Handler.getMain());
+            this.mScreen = screen;
+        }
+
+        public void register(ContentResolver cr) {
+            cr.registerContentObserver(URI_SYSTEM_PROFILES_ENABLED, false, this);
+        }
+
+        public void unregister(ContentResolver cr) {
+            cr.unregisterContentObserver(this);
+        }
+
+        @Override
+        public void onChange(boolean selfChange, Uri uri) {
+            super.onChange(selfChange, uri);
+            if (uri == null || URI_SYSTEM_PROFILES_ENABLED.equals(uri)) {
+                if (mScreen != null) {
+                    for (int i = 0; i < mScreen.getPreferenceCount(); i++) {
+                        Preference pref = mScreen.getPreference(i);
+                        updateState(pref);
+                    }
+                }
+            }
+        }
     }
 }

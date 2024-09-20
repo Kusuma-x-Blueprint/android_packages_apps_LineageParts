@@ -7,4 +7,17 @@
 <PreferenceScreen
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:key="profiles_settings"
-    android:title="@string/profiles_settings_title" />
+    android:title="@string/profiles_settings_title" >
+
+    <com.android.settingslib.widget.MainSwitchPreference
+        android:key="profiles_preference_main_switch"
+        android:title="@string/profiles_settings_enable_title"
+        android:order="0" />
+
+    <Preference
+        android:key="profiles_preference_add"
+        android:title="@string/profiles_create_new" 
+        android:icon="@drawable/ic_add_24dp"
+        android:order="999" />
+
+</PreferenceScreen>
