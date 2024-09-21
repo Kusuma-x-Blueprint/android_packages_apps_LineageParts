@@ -338,14 +338,10 @@ public class SetupActionsFragment extends SettingsPreferenceFragment
         super.onActivityCreated(savedInstanceState);
         final PartsActivity activity = (PartsActivity) requireActivity();
         if (mNewProfileMode) {
-            activity.setTitle(getString(R.string.profiles_create_new));
-            activity.getTopIntro().setText(R.string.profile_setup_actions_title);
+            activity.setTitle(R.string.profiles_create_new_actions);
         } else {
             activity.setTitle(R.string.profile_profile_manage);
-            activity.getTopIntro().setText(getString(
-                    R.string.profile_selected, mProfile.getName()));
         }
-        activity.showTopIntro(true);
         Toolbar toolbar = activity.findViewById(R.id.action_bar);
         if (toolbar != null) {
             toolbar.setNavigationOnClickListener(v -> {

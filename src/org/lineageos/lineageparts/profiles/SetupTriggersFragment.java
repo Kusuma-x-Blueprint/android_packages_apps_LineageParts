@@ -103,14 +103,10 @@ public class SetupTriggersFragment extends SettingsPreferenceFragment {
         super.onActivityCreated(savedInstanceState);
         final PartsActivity activity = (PartsActivity) requireActivity();
         if (mNewProfileMode) {
-            activity.setTitle(R.string.profiles_create_new);
-            activity.getTopIntro().setText(R.string.profile_setup_setup_triggers_title);
+            activity.setTitle(R.string.profiles_create_new_triggers);
         } else {
             activity.setTitle(R.string.profile_profile_manage);
-            activity.getTopIntro().setText(getString(
-                    R.string.profile_setup_setup_triggers_title_config, mProfile.getName()));
         }
-        activity.showTopIntro(true);
         CollapsingToolbarLayout toolbarLayout = activity.getCollapsingToolbarLayout();
         if (toolbarLayout != null) {
             toolbarLayout.measure(View.MeasureSpec.EXACTLY, View.MeasureSpec.EXACTLY);
