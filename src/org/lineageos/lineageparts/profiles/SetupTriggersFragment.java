@@ -12,6 +12,9 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toolbar;
@@ -41,6 +44,7 @@ public class SetupTriggersFragment extends SettingsPreferenceFragment {
 
     public static final String EXTRA_INITIAL_PAGE = "current_item";
 
+    private static final int MENU_NEXT = Menu.FIRST;
     private static final int REQUEST_SETUP_ACTIONS = 5;
 
     public static SetupTriggersFragment newInstance(Profile profile, boolean newProfile) {
@@ -64,6 +68,34 @@ public class SetupTriggersFragment extends SettingsPreferenceFragment {
             mNewProfileMode = getArguments().getBoolean(ProfilesSettings.EXTRA_NEW_PROFILE, false);
             mPreselectedItem = getArguments().getInt(EXTRA_INITIAL_PAGE, 0);
         }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        if (mNewProfileMode) {
+            menu.add(0, MENU_NEXT, 0, R.string.next)
+                    .setIcon(R.drawable.ic_actionbar_next)
+                    .setAlphabeticShortcut('n')
+                    .setEnabled(true)
+                    .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM |
+                            MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+        }
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case MENU_NEXT:
+                Bundle args = new Bundle();
+                args.putParcelable(ProfilesSettings.EXTRA_PROFILE, mProfile);
+                args.putBoolean(ProfilesSettings.EXTRA_NEW_PROFILE, mNewProfileMode);
+                PartsActivity pa = (PartsActivity) getActivity();
+                pa.startPreferencePanel(SetupActionsFragment.class.getCanonicalName(), args,
+                        R.string.profile_profile_manage, null,
+                        SetupTriggersFragment.this, REQUEST_SETUP_ACTIONS);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -132,24 +164,6 @@ public class SetupTriggersFragment extends SettingsPreferenceFragment {
 
         mPager.setAdapter(mAdapter);
 
-        if (mNewProfileMode) {
-            showButtonBar(true);
-            getNextButton().setOnClickListener(view -> {
-                Bundle args = new Bundle();
-                args.putParcelable(ProfilesSettings.EXTRA_PROFILE, mProfile);
-                args.putBoolean(ProfilesSettings.EXTRA_NEW_PROFILE, mNewProfileMode);
-
-                PartsActivity pa = (PartsActivity) getActivity();
-                pa.startPreferencePanel(SetupActionsFragment.class.getCanonicalName(), args,
-                        R.string.profile_profile_manage, null,
-                        SetupTriggersFragment.this, REQUEST_SETUP_ACTIONS);
-            });
-
-            // back button
-            getBackButton().setOnClickListener(view ->
-                    finishPreferencePanel(SetupTriggersFragment.this, Activity.RESULT_CANCELED,
-                    null));
-        }
         return root;
     }
 

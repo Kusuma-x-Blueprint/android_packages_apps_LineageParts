@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     SPDX-FileCopyrightText: 2024 Kusuma
+     SPDX-License-Identifier: Apache-2.0
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24"
+    android:tint="?android:attr/colorControlNormal">
+
+    <path
+        android:fillColor="@android:color/white"
+        android:pathData="M 6.699219 18 L 1.050781 12.351562 L 2.476562 10.949219 L 6.726562 15.199219 L 8.125 16.601562 Z M 12.351562 18 L 6.699219 12.351562 L 8.101562 10.925781 L 12.351562 15.175781 L 21.550781 5.976562 L 22.949219 7.398438 Z M 12.351562 12.351562 L 10.925781 10.949219 L 15.875 6 L 17.300781 7.398438 Z M 12.351562 12.351562 " />
+</vector>

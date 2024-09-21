@@ -92,6 +92,7 @@ public class SetupActionsFragment extends SettingsPreferenceFragment
 
     private static final int MENU_REMOVE = Menu.FIRST;
     private static final int MENU_FILL_PROFILE = Menu.FIRST + 1;
+    private static final int MENU_FINISH = Menu.FIRST + 2;
 
     private static final int DIALOG_FILL_FROM_SETTINGS = 1;
     private static final int DIALOG_AIRPLANE_MODE = 2;
@@ -260,6 +261,13 @@ public class SetupActionsFragment extends SettingsPreferenceFragment
                     .setAlphabeticShortcut('f')
                     .setEnabled(true)
                     .setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+        } else {
+            menu.add(0, MENU_FINISH, 0, R.string.finish)
+                    .setIcon(R.drawable.ic_actionbar_finish)
+                    .setAlphabeticShortcut('f')
+                    .setEnabled(true)
+                    .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM |
+                            MenuItem.SHOW_AS_ACTION_WITH_TEXT);
         }
     }
 
@@ -272,6 +280,10 @@ public class SetupActionsFragment extends SettingsPreferenceFragment
                 return true;
             case MENU_FILL_PROFILE:
                 showDialog(DIALOG_FILL_FROM_SETTINGS);
+                return true;
+            case MENU_FINISH:
+                mProfileManager.addProfile(mProfile);
+                finishPreferencePanel(SetupActionsFragment.this, Activity.RESULT_OK, null);
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -868,19 +880,6 @@ public class SetupActionsFragment extends SettingsPreferenceFragment
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_setup_actions, container, false);
-
-        if (mNewProfileMode) {
-            showButtonBar(true);
-
-            getBackButton().setOnClickListener(view1 ->
-                    finishPreferencePanel(SetupActionsFragment.this, Activity.RESULT_OK, null));
-
-            getNextButton().setText(R.string.finish);
-            getNextButton().setOnClickListener(view2 -> {
-                mProfileManager.addProfile(mProfile);
-                finishPreferencePanel(SetupActionsFragment.this, Activity.RESULT_OK, null);
-            });
-        }
         return view;
     }
 
