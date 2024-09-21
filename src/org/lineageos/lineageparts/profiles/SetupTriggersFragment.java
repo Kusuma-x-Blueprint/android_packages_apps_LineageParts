@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toolbar;
 
 import androidx.annotation.NonNull;
 
@@ -82,6 +83,16 @@ public class SetupTriggersFragment extends SettingsPreferenceFragment {
         if (toolbarLayout != null) {
             toolbarLayout.measure(View.MeasureSpec.EXACTLY, View.MeasureSpec.EXACTLY);
             toolbarLayout.post(() -> mPager.setHeightOffset(mTabLayout.getHeight()));
+        }
+        Toolbar toolbar = activity.findViewById(R.id.action_bar);
+        if (toolbar != null) {
+            toolbar.setNavigationOnClickListener(v -> {
+                if (mNewProfileMode) {
+                    finishPreferencePanel(SetupTriggersFragment.this, Activity.RESULT_CANCELED, null);
+                } else {
+                    activity.onBackPressed();
+                }
+            });
         }
     }
 
@@ -153,5 +164,11 @@ public class SetupTriggersFragment extends SettingsPreferenceFragment {
         }
     }
 
-
+    public boolean handleBackPressed() {
+        if (mNewProfileMode) {
+            finishPreferencePanel(SetupTriggersFragment.this, Activity.RESULT_CANCELED, null);
+            return true;
+        }
+        return false;
+    }
 }

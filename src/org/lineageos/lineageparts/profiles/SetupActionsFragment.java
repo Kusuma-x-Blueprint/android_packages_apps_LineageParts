@@ -40,6 +40,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toolbar;
 
 import androidx.appcompat.app.AlertDialog;
 
@@ -333,6 +334,16 @@ public class SetupActionsFragment extends SettingsPreferenceFragment
                     R.string.profile_selected, mProfile.getName()));
         }
         activity.showTopIntro(true);
+        Toolbar toolbar = activity.findViewById(R.id.action_bar);
+        if (toolbar != null) {
+            toolbar.setNavigationOnClickListener(v -> {
+                if (mNewProfileMode) {
+                    finishPreferencePanel(SetupActionsFragment.this, Activity.RESULT_OK, null);
+                } else {
+                    activity.onBackPressed();
+                }
+            });
+        }
     }
 
     private AlertDialog requestFillProfileFromSettingsDialog() {
@@ -910,5 +921,13 @@ public class SetupActionsFragment extends SettingsPreferenceFragment
         PartsActivity pa = (PartsActivity) getActivity();
         pa.startPreferencePanel(SetupTriggersFragment.class.getCanonicalName(), args,
                 R.string.profile_profile_manage, null, this, NEW_TRIGGER_REQUEST_CODE);
+    }
+
+    public boolean handleBackPressed() {
+        if (mNewProfileMode) {
+            finishPreferencePanel(SetupActionsFragment.this, Activity.RESULT_OK, null);
+            return true;
+        }
+        return false;
     }
 }

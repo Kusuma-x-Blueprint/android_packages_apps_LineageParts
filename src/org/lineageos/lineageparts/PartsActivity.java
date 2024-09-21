@@ -29,7 +29,11 @@ import com.android.settingslib.widget.MainSwitchBar;
 import lineageos.preference.PartInfo;
 import lineageos.preference.PartsList;
 
+import java.util.List;
+
 import org.lineageos.lineageparts.profiles.NFCProfileTagCallback;
+import org.lineageos.lineageparts.profiles.SetupActionsFragment;
+import org.lineageos.lineageparts.profiles.SetupTriggersFragment;
 
 public class PartsActivity extends CollapsingToolbarBaseActivity implements
         PreferenceFragmentCompat.OnPreferenceStartFragmentCallback,
@@ -149,8 +153,20 @@ public class PartsActivity extends CollapsingToolbarBaseActivity implements
 
     @Override
     public void onBackPressed() {
+        List<Fragment> fragments = getSupportFragmentManager().getFragments();
+        boolean isHandled = false;
+        for (Fragment fragment : fragments) {
+            if (fragment instanceof SetupTriggersFragment && fragment.isVisible()) {
+                isHandled = ((SetupTriggersFragment) fragment).handleBackPressed();
+            }
+            else if (fragment instanceof SetupActionsFragment && fragment.isVisible()) {
+                isHandled = ((SetupActionsFragment) fragment).handleBackPressed();
+            }
+            if (isHandled) {
+                return;
+            }
+        }
         setTitle(mInitialTitle);
-
         if (!getSupportFragmentManager().popBackStackImmediate()) {
             super.onBackPressed();
         }
