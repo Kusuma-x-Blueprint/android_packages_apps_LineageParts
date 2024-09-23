@@ -53,18 +53,19 @@ public class ProfilesSettings extends PreferenceControllerFragment {
 
     @Override
     protected List<AbstractPreferenceController> createPreferenceControllers(Context context) {
-        return buildPreferenceControllers(context, getSettingsLifecycle());
+        return buildPreferenceControllers(context, getSettingsLifecycle(), 
+                ProfileManager.getInstance(context));
     }
 
     private List<AbstractPreferenceController> buildPreferenceControllers(Context context,
-            Lifecycle lifecycle) {
+            Lifecycle lifecycle, ProfileManager profileManager) {
         List<AbstractPreferenceController> controllers = new ArrayList<>();
         mProfilesPreference = new ProfilesPreference(context, lifecycle);
         controllers.add(mProfilesPreference);
         mMenuController = new ProfilesMenuController(context, lifecycle, mProfilesPreference);
         controllers.add(mMenuController);
         controllers.add(new ProfilesMainSwitchController(context));
-        controllers.add(new ProfilesAddController(context, lifecycle));
+        controllers.add(new ProfilesAddController(context, lifecycle, profileManager));
         return controllers;
     }
 

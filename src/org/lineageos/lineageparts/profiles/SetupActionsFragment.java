@@ -22,10 +22,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.provider.Settings;
-
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -36,13 +32,18 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.CheckBox;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.SeekBar;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toolbar;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import lineageos.app.Profile;
 import lineageos.app.ProfileManager;
@@ -73,7 +74,9 @@ import org.lineageos.lineageparts.profiles.actions.item.VolumeStreamItem;
 import org.lineageos.lineageparts.utils.DeviceUtils;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -358,11 +361,17 @@ public class SetupActionsFragment extends SettingsPreferenceFragment
         AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
         builder.setMessage(R.string.profile_populate_profile_from_state);
         builder.setNegativeButton(R.string.no, null);
-        builder.setPositiveButton(R.string.yes, (dialog, which) -> {
-            fillProfileFromCurrentSettings();
-            dialog.dismiss();
+        builder.setPositiveButton(R.string.yes, null);
+        final AlertDialog dialog = builder.create();
+        setDialogButtonsToNormalCase(dialog, R.string.yes, R.string.no);
+        dialog.setOnShowListener(d -> {
+            Button positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+            positiveButton.setOnClickListener(v -> {
+                fillProfileFromCurrentSettings();
+                dialog.dismiss();
+            });
         });
-        return builder.create();
+        return dialog;
     }
 
     private void fillProfileFromCurrentSettings() {
@@ -531,21 +540,25 @@ public class SetupActionsFragment extends SettingsPreferenceFragment
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setMessage(getString(R.string.profile_remove_dialog_message, mProfile.getName()));
-        builder.setPositiveButton(R.string.yes,
-                (DialogInterface.OnClickListener) (dialog, which) -> {
-            dialog.dismiss();
-            mProfileManager.removeProfile(mProfile);
-            finishFragment();
-        });
+        builder.setPositiveButton(R.string.yes, null);
         builder.setNegativeButton(R.string.no, null);
-        return builder.create();
+        final AlertDialog dialog = builder.create();
+        setDialogButtonsToNormalCase(dialog, R.string.yes, R.string.no);
+        dialog.setOnShowListener(d -> {
+            Button positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+            positiveButton.setOnClickListener(v -> {
+                dialog.dismiss();
+                mProfileManager.removeProfile(mProfile);
+                finishFragment();
+            });
+        });
+        return dialog;
     }
 
     private AlertDialog requestLockscreenModeDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         final String[] lockEntries =
                 getResources().getStringArray(R.array.profile_lockmode_entries);
-
         int defaultIndex = 0; // no action
         for (int i = 0; i < LOCKMODE_MAPPING.length; i++) {
             if (LOCKMODE_MAPPING[i] == mProfile.getScreenLockMode().getValue()) {
@@ -564,14 +577,15 @@ public class SetupActionsFragment extends SettingsPreferenceFragment
         });
 
         builder.setNegativeButton(android.R.string.cancel, null);
-        return builder.create();
+        final AlertDialog dialog = builder.create();
+        setDialogButtonsToNormalCase(dialog, null, android.R.string.cancel);
+        return dialog;
     }
 
     private AlertDialog requestDozeModeDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         final String[] dozeEntries =
                 getResources().getStringArray(R.array.profile_doze_entries);
-
         int defaultIndex = 0; // no action
         for (int i = 0; i < DOZE_MAPPING.length; i++) {
             if (DOZE_MAPPING[i] == mProfile.getDozeMode()) {
@@ -590,15 +604,17 @@ public class SetupActionsFragment extends SettingsPreferenceFragment
         });
 
         builder.setNegativeButton(android.R.string.cancel, null);
-        return builder.create();
+        final AlertDialog dialog = builder.create();
+        setDialogButtonsToNormalCase(dialog, null, android.R.string.cancel);
+        return dialog;
     }
 
     private AlertDialog requestNotificationLightModeDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         final String[] notificationLightEntries =
                 getResources().getStringArray(R.array.profile_notification_light_entries);
-
         int defaultIndex = 0; // no action
+
         for (int i = 0; i < NOTIFICATION_LIGHT_MAPPING.length; i++) {
             if (NOTIFICATION_LIGHT_MAPPING[i] == mProfile.getNotificationLightMode()) {
                 defaultIndex = i;
@@ -616,7 +632,9 @@ public class SetupActionsFragment extends SettingsPreferenceFragment
         });
 
         builder.setNegativeButton(android.R.string.cancel, null);
-        return builder.create();
+        final AlertDialog dialog = builder.create();
+        setDialogButtonsToNormalCase(dialog, null, android.R.string.cancel);
+        return dialog;
     }
 
     private AlertDialog requestAirplaneModeDialog(final AirplaneModeSettings setting) {
@@ -656,7 +674,9 @@ public class SetupActionsFragment extends SettingsPreferenceFragment
         });
 
         builder.setNegativeButton(android.R.string.cancel, null);
-        return builder.create();
+        final AlertDialog dialog = builder.create();
+        setDialogButtonsToNormalCase(dialog, null, android.R.string.cancel);
+        return dialog;
     }
 
     @Override
@@ -713,7 +733,9 @@ public class SetupActionsFragment extends SettingsPreferenceFragment
         });
 
         builder.setNegativeButton(android.R.string.cancel, null);
-        return builder.create();
+        AlertDialog dialog = builder.create();
+        setDialogButtonsToNormalCase(dialog, null, android.R.string.cancel);
+        return dialog;
     }
 
     private AlertDialog requestConnectionOverrideDialog(final ConnectionSettings setting) {
@@ -756,7 +778,9 @@ public class SetupActionsFragment extends SettingsPreferenceFragment
         });
 
         builder.setNegativeButton(android.R.string.cancel, null);
-        return builder.create();
+        AlertDialog dialog = builder.create();
+        setDialogButtonsToNormalCase(dialog, null, android.R.string.cancel);
+        return dialog;
     }
 
     public AlertDialog requestVolumeDialog(int streamId,
@@ -767,7 +791,7 @@ public class SetupActionsFragment extends SettingsPreferenceFragment
         final LayoutInflater inflater = LayoutInflater.from(getActivity());
         final View view = inflater.inflate(R.layout.dialog_profiles_volume_override, null);
         final SeekBar seekBar = view.findViewById(R.id.seekbar);
-        final CheckBox override = view.findViewById(R.id.checkbox);
+        final Switch override = view.findViewById(R.id.override);
         override.setChecked(streamSettings.isOverride());
         override.setOnCheckedChangeListener((buttonView, isChecked) ->
                 seekBar.setEnabled(isChecked));
@@ -788,11 +812,13 @@ public class SetupActionsFragment extends SettingsPreferenceFragment
             updateProfile();
         });
         builder.setNegativeButton(android.R.string.cancel, null);
+        AlertDialog dialog = builder.create();
         setOnDismissListener(dialogInterface -> {
             volumizer.stop();
             setOnDismissListener(null); // re-set this for next dialog
         });
-        return builder.create();
+        setDialogButtonsToNormalCase(dialog, null, android.R.string.cancel);
+        return dialog;
     }
 
     public AlertDialog requestBrightnessDialog(final BrightnessSettings brightnessSettings) {
@@ -802,7 +828,7 @@ public class SetupActionsFragment extends SettingsPreferenceFragment
         final LayoutInflater inflater = LayoutInflater.from(getActivity());
         final View view = inflater.inflate(R.layout.dialog_profiles_brightness_override, null);
         final SeekBar seekBar = view.findViewById(R.id.seekbar);
-        final CheckBox override = view.findViewById(R.id.checkbox);
+        final Switch override = view.findViewById(R.id.override);
         override.setChecked(brightnessSettings.isOverride());
         override.setOnCheckedChangeListener((buttonView, isChecked) ->
                 seekBar.setEnabled(isChecked));
@@ -822,7 +848,9 @@ public class SetupActionsFragment extends SettingsPreferenceFragment
         });
         builder.setNegativeButton(android.R.string.cancel,
                 (DialogInterface.OnClickListener) (dialog, which) -> dialog.dismiss());
-        return builder.create();
+        AlertDialog dialog = builder.create();
+        setDialogButtonsToNormalCase(dialog, null, android.R.string.cancel);
+        return dialog;
     }
 
     private AlertDialog requestProfileName() {
@@ -832,6 +860,11 @@ public class SetupActionsFragment extends SettingsPreferenceFragment
         final EditText entry = dialogView.findViewById(R.id.name);
         entry.setText(mProfile.getName());
         entry.setSelectAllOnFocus(true);
+
+        Set<String> existingProfileNames = new HashSet<>();
+        for (Profile profile : mProfileManager.getProfiles()) {
+            existingProfileNames.add(profile.getName());
+        }
 
         final AlertDialog alertDialog = new AlertDialog.Builder(getActivity())
                 .setTitle(R.string.rename_dialog_title)
@@ -862,13 +895,17 @@ public class SetupActionsFragment extends SettingsPreferenceFragment
                 final String str = s.toString();
                 final boolean empty = TextUtils.isEmpty(str)
                         || TextUtils.getTrimmedLength(str) == 0;
-                alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(!empty);
+                final boolean duplicate = existingProfileNames.contains(str)
+                        || TextUtils.equals(str, mProfile.getName());
+                alertDialog.getButton(AlertDialog.BUTTON_POSITIVE)
+                        .setEnabled(!empty && !duplicate);
             }
         });
         alertDialog.setOnShowListener((DialogInterface.OnShowListener) dialog -> {
             InputMethodManager imm = getActivity().getSystemService(InputMethodManager.class);
             imm.showSoftInput(entry, InputMethodManager.SHOW_IMPLICIT);
         });
+        setDialogButtonsToNormalCase(alertDialog, R.string.profiles_rename, android.R.string.cancel);
         return alertDialog;
     }
 
@@ -916,6 +953,22 @@ public class SetupActionsFragment extends SettingsPreferenceFragment
         PartsActivity pa = (PartsActivity) getActivity();
         pa.startPreferencePanel(SetupTriggersFragment.class.getCanonicalName(), args,
                 R.string.profile_profile_manage, null, this, NEW_TRIGGER_REQUEST_CODE);
+    }
+
+    private void setDialogButtonsToNormalCase(AlertDialog dialog, 
+            @Nullable Integer positiveResId, @Nullable Integer negativeResId) {
+        dialog.setOnShowListener(d -> {
+            Button positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+            Button negativeButton = dialog.getButton(AlertDialog.BUTTON_NEGATIVE);
+            if (negativeButton != null && negativeResId != null) {
+                negativeButton.setAllCaps(false);
+                negativeButton.setText(getString(negativeResId));
+            }
+            if (positiveButton != null && positiveResId != null) {
+                positiveButton.setAllCaps(false);
+                positiveButton.setText(getString(positiveResId));
+            }
+        });
     }
 
     public boolean handleBackPressed() {

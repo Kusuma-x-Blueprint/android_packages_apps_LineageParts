@@ -42,8 +42,7 @@ public class VolumeStreamItem extends Item {
 
     @Override
     public boolean isEnabled(Context context) {
-        // all streams are enabled, except notification stream if linking to ring volume is enabled
-        return mStreamId != AudioManager.STREAM_NOTIFICATION;
+        return true;
     }
 
     public static int getNameForStream(int stream) {

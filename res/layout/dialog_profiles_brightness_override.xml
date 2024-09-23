@@ -11,17 +11,18 @@
               android:paddingEnd="20dip"
               android:gravity="center_horizontal">
 
-    <CheckBox
-            android:id="@+id/checkbox"
+    <Switch android:id="@+id/override"
             android:text="@string/profile_brightness_override_checkbox_label"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dip" />
+            android:layout_marginTop="16dip" 
+            android:paddingStart="4dip"
+            android:paddingEnd="4dip" />
 
     <SeekBar android:id="@+id/seekbar"
              android:layout_width="match_parent"
              android:layout_height="wrap_content"
-             android:layout_marginTop="20dip"
+             android:layout_marginTop="8dip"
              android:layout_marginBottom="20dip" />
 
 </LinearLayout>

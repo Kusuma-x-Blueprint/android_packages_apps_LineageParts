@@ -33,12 +33,16 @@ import com.android.settingslib.core.lifecycle.LifecycleObserver;
 import com.android.settingslib.core.lifecycle.events.OnPause;
 import com.android.settingslib.core.lifecycle.events.OnResume;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.lineageos.lineageparts.PartsActivity;
 import org.lineageos.lineageparts.PreferenceControllerMixin;
 import org.lineageos.lineageparts.R;
 import org.lineageos.lineageparts.SettingsPreferenceFragment;
 
 import lineageos.app.Profile;
+import lineageos.app.ProfileManager;
 import lineageos.providers.LineageSettings;
 
 public class ProfilesAddController extends AbstractPreferenceController
@@ -46,12 +50,15 @@ public class ProfilesAddController extends AbstractPreferenceController
     private static final String KEY = "profiles_preference_add";
     private final Context mContext;
 
+    private ProfileManager mProfileManager;
     private Preference mPreference;
     private SettingObserver mSettingObserver;
 
-    public ProfilesAddController(Context context, Lifecycle lifecycle) {
+    public ProfilesAddController(Context context, Lifecycle lifecycle, 
+            ProfileManager profileManager) {
         super(context);
         mContext = context;
+        mProfileManager = profileManager;
 
         if (lifecycle != null) {
             lifecycle.addObserver(this);
@@ -105,9 +112,21 @@ public class ProfilesAddController extends AbstractPreferenceController
     }
 
     private void addProfile() {
+        String baseProfileName = mContext.getString(R.string.new_profile_name);
+        String newProfileName = baseProfileName;
+        Set<String> existingProfileNames = new HashSet<>();
+        for (Profile profile : mProfileManager.getProfiles()) {
+            existingProfileNames.add(profile.getName());
+        }
+        int counter = 1;
+        while (existingProfileNames.contains(newProfileName)) {
+            newProfileName = baseProfileName + " " + counter;
+            counter++;
+        }
+
         Bundle args = new Bundle();
         args.putBoolean(ProfilesSettings.EXTRA_NEW_PROFILE, true);
-        args.putParcelable(ProfilesSettings.EXTRA_PROFILE, new Profile(mContext.getString(R.string.new_profile_name)));
+        args.putParcelable(ProfilesSettings.EXTRA_PROFILE, new Profile(newProfileName));
 
         PartsActivity pa = (PartsActivity) mContext;
         pa.startPreferencePanel(SetupTriggersFragment.class.getCanonicalName(), args,

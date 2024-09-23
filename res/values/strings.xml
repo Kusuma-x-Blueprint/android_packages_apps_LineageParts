@@ -292,10 +292,10 @@
 
     <!-- Profiles -->
     <string name="profile_menu_delete_title">Delete</string>
-    <string name="profile_action_none">Leave unchanged</string>
-    <string name="profile_action_system">System default</string>
-    <string name="profile_action_disable">Turn off</string>
-    <string name="profile_action_enable">Turn on</string>
+    <string name="profile_action_none">Default</string>
+    <string name="profile_action_system">Default</string>
+    <string name="profile_action_disable">Disable</string>
+    <string name="profile_action_enable">Enable</string>
 
     <string name="profile_trigger_a2dp_connect">On A2DP connect</string>
     <string name="profile_trigger_a2dp_disconnect">On A2DP disconnect</string>
@@ -323,7 +323,7 @@
 
     <!-- Profiles settings  -->
     <string name="profiles_settings_title">System profiles</string>
-    <string name="profiles_settings_enable_title">Enable profiles</string>
+    <string name="profiles_settings_enable_title">Use system profiles</string>
     <string name="profiles_create_new">Create new profile</string>
     <string name="profile_settings_title">Profile</string>
     <string name="profile_empty_list_profiles_off">To configure and use system profiles, turn profiles on.</string>
@@ -353,12 +353,10 @@
 
     <!-- Add Profile -->
     <string name="profile_name_title">Name</string>
-    <string name="new_profile_name">&lt;new profile&gt;</string>
+    <string name="new_profile_name">New Profile</string>
 
     <!-- Rename Dialog  -->
-    <string name="rename_dialog_title">Rename</string>
-    <string name="rename_dialog_message">Enter a new name</string>
-    <string name="rename_dialog_hint">Enter profile name</string>
+    <string name="rename_dialog_title">Rename this profile</string>
 
     <!-- Reset Profiles -->
     <string name="profile_reset_title">Reset</string>
@@ -375,10 +373,10 @@
     <string name="profile_networkmode_2g3g4g">2G/3G/LTE</string>
 
     <!-- Profile Config screen PreferenceGroup titles -->
-    <string name="profile_volumeoverrides_title">Volume overrides</string>
+    <string name="profile_volumeoverrides_title">Volumes</string>
     <string name="connection_state_enabled">Enable</string>
     <string name="volume_override_summary">Set to %1$s/%2$s</string>
-    <string name="profile_volume_override_checkbox_label">Override volume</string>
+    <string name="profile_volume_override_checkbox_label">Use custom volume</string>
 
     <!-- Menu item for managing profiles -->
     <string name="profile_profiles_manage">Profiles</string>
@@ -406,24 +404,24 @@
 
     <!-- Profiles - system settings -->
     <string name="profile_system_settings_title">System settings</string>
-    <string name="profile_lockmode_title">Lock screen mode</string>
+    <string name="profile_lockmode_title">Screen lock</string>
     <string name="profile_lockmode_policy_disabled_summary">This profile option is disabled by a device administrator policy</string>
     <string name="profile_lockmode_insecure_summary">Don\'t ask for PIN or password</string>
     <string name="profile_lockmode_disabled_summary">Disable lock screen</string>
     <string name="profile_airplanemode_title">Airplane mode</string>
 
-    <string name="profile_brightness_title">Screen brightness</string>
+    <string name="profile_brightness_title">Brightness</string>
 
     <string name="profile_brightness_override_summary">Set to %1$d%%</string>
-    <string name="profile_brightness_override_checkbox_label">Override brightness</string>
+    <string name="profile_brightness_override_checkbox_label">Use custom brightness</string>
 
     <!-- Connection override toggles (not all are used at this time ) -->
     <string name="toggleWifi">Wi\u2011Fi</string>
-    <string name="toggleWifiAp">Portable Wi\u2011Fi hotspot</string>
+    <string name="toggleWifiAp">Wi\u2011Fi hotspot</string>
     <string name="toggleBluetooth">Bluetooth</string>
     <string name="toggleLocation">Location</string>
-    <string name="toggleData">Data connection</string>
-    <string name="toggleSync">Auto-sync data</string>
+    <string name="toggleData">Mobile data</string>
+    <string name="toggleSync">Sync</string>
     <string name="toggleNfc">NFC</string>
 
     <!-- Sound settings screen -->

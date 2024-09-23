@@ -17,6 +17,7 @@
     <string name="profile_time_title">Trigger time</string>
     <string name="profiles_create_new_actions">Setup actions</string>
     <string name="profiles_create_new_triggers">Add triggers</string>
+    <string name="profiles_rename">Rename</string>
 
     <!-- Encryption -->
     <string name="trust_feature_encryption_value_not_supported">Not supported</string>

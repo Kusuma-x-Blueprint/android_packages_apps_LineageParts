@@ -7,9 +7,9 @@
           android:id="@android:id/title"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:layout_marginBottom="16dp"
           android:layout_marginTop="16dp"
-          android:textAppearance="@style/TextAppearance.CategoryTitle"
+          android:paddingTop="8dp"
+          android:paddingBottom="8dp"
+          android:textAppearance="@*android:style/TextAppearance.DeviceDefault.Body2"
           android:textColor="?android:attr/colorAccent"
-          android:paddingStart="@dimen/preference_no_icon_padding_start"/>
-
+          android:paddingStart="?android:attr/listPreferredItemPaddingStart"/>

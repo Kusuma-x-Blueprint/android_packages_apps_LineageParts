@@ -57,8 +57,7 @@ public class ItemListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             holder = new HeaderViewHolder(
                     mInflater.inflate(R.layout.profiles_header, parent, false));
         } else {
-            final View view = mInflater.inflate(
-                    androidx.preference.R.layout.preference_material, parent, false);
+            final View view = mInflater.inflate(R.layout.preference_material, parent, false);
             holder = new ItemViewHolder(view);
         }
         holder.itemView.setOnClickListener(this);
@@ -104,8 +103,8 @@ public class ItemListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         private ItemViewHolder(View view) {
             super(view);
-            mTitleView = view.findViewById(android.R.id.title);
-            mSummaryView = view.findViewById(android.R.id.summary);
+            mTitleView = view.findViewById(R.id.title);
+            mSummaryView = view.findViewById(R.id.summary);
         }
 
         private void bind(Item item) {
