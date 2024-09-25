@@ -12,6 +12,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import com.android.internal.widget.PreferenceImageView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -105,7 +106,8 @@ public abstract class AbstractTriggerListFragment extends Fragment {
         emptyViewStub.setLayoutResource(getEmptyViewLayoutResId());
 
         mEmptyView = emptyViewStub.inflate();
-        mEmptyView.setOnClickListener(v -> startActivity(getEmptyViewClickIntent()));
+        TextView titleView = mEmptyView.findViewById(android.R.id.title);
+        titleView.setOnClickListener(v -> startActivity(getEmptyViewClickIntent()));
 
         mRecyclerView = view.findViewById(android.R.id.list);
 
@@ -175,12 +177,12 @@ public abstract class AbstractTriggerListFragment extends Fragment {
     private static class TriggerViewHolder extends RecyclerView.ViewHolder {
         private final TextView mTitleView;
         private final TextView mDescView;
-        private final ImageView mIconView;
+        private final PreferenceImageView mIconView;
 
         public TriggerViewHolder(View view) {
             super(view);
             mTitleView = view.findViewById(R.id.title);
-            mDescView = view.findViewById(R.id.desc);
+            mDescView = view.findViewById(R.id.summary);
             mIconView = view.findViewById(R.id.icon);
         }
 
@@ -217,7 +219,7 @@ public abstract class AbstractTriggerListFragment extends Fragment {
         public TriggerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             LayoutInflater inflater = LayoutInflater.from(parent.getContext());
             TriggerViewHolder holder = new TriggerViewHolder(
-                    inflater.inflate(R.layout.abstract_trigger_row, parent, false));
+                    inflater.inflate(R.layout.preference_material, parent, false));
             holder.itemView.setOnClickListener(this);
             return holder;
         }
