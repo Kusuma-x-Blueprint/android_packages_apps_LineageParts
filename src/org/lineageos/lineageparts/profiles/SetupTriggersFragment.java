@@ -21,8 +21,6 @@ import android.widget.Toolbar;
 
 import androidx.annotation.NonNull;
 
-import com.google.android.material.appbar.CollapsingToolbarLayout;
-
 import lineageos.app.Profile;
 import lineageos.app.ProfileManager;
 
@@ -106,11 +104,6 @@ public class SetupTriggersFragment extends SettingsPreferenceFragment {
             activity.setTitle(R.string.profiles_create_new_triggers);
         } else {
             activity.setTitle(R.string.profile_profile_manage);
-        }
-        CollapsingToolbarLayout toolbarLayout = activity.getCollapsingToolbarLayout();
-        if (toolbarLayout != null) {
-            toolbarLayout.measure(View.MeasureSpec.EXACTLY, View.MeasureSpec.EXACTLY);
-            toolbarLayout.post(() -> mPager.setHeightOffset(mTabLayout.getHeight()));
         }
         Toolbar toolbar = activity.findViewById(R.id.action_bar);
         if (toolbar != null) {
