@@ -947,6 +947,11 @@ public class SetupActionsFragment extends SettingsPreferenceFragment
     }
 
     private void openTriggersFragment(int openTo) {
+        if (!getActivity().getPackageManager().hasSystemFeature(PackageManager.FEATURE_NFC) && 
+                openTo >= 3) {
+            openTo -= 1;
+        }
+
         Bundle args = new Bundle();
         args.putParcelable(ProfilesSettings.EXTRA_PROFILE, mProfile);
         args.putBoolean(ProfilesSettings.EXTRA_NEW_PROFILE, false);
