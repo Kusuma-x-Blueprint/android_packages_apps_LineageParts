@@ -216,34 +216,51 @@ public class SetupActionsFragment extends SettingsPreferenceFragment
             mItems.add(generateTriggerItem(TriggerItem.APP));
         }
 
-        // connection overrides
+        // internet overrides
         mItems.add(new Header(R.string.wireless_networks_settings_title));
-        if (DeviceUtils.deviceSupportsBluetooth(context)) {
-            mItems.add(new ConnectionOverrideItem(PROFILE_CONNECTION_BLUETOOTH,
-                    mProfile.getSettingsForConnection(PROFILE_CONNECTION_BLUETOOTH)));
-        }
-        mItems.add(generateConnectionOverrideItem(PROFILE_CONNECTION_LOCATION));
         mItems.add(generateConnectionOverrideItem(PROFILE_CONNECTION_WIFI));
-        mItems.add(generateConnectionOverrideItem(PROFILE_CONNECTION_SYNC));
         if (DeviceUtils.deviceSupportsMobileData(getActivity())) {
             mItems.add(generateConnectionOverrideItem(PROFILE_CONNECTION_MOBILEDATA));
             mItems.add(generateConnectionOverrideItem(PROFILE_CONNECTION_WIFIAP));
+        }
+        mItems.add(new AirplaneModeItem(mProfile.getAirplaneMode()));
+
+        // connected devices overrides
+        mItems.add(new Header(R.string.connected_devices_settings_title));
+        if (DeviceUtils.deviceSupportsBluetooth(context)) {
+            mItems.add(new ConnectionOverrideItem(PROFILE_CONNECTION_BLUETOOTH,
+                    mProfile.getSettingsForConnection(PROFILE_CONNECTION_BLUETOOTH)));
         }
         if (DeviceUtils.deviceSupportsNfc(getActivity())) {
             mItems.add(generateConnectionOverrideItem(PROFILE_CONNECTION_NFC));
         }
 
-        // add volume streams
+        // notifications overrides
+        mItems.add(new Header(R.string.notifications_settings_title));
+        if (getResources().getBoolean(
+                com.android.internal.R.bool.config_intrusiveNotificationLed)) {
+            mItems.add(new NotificationLightModeItem(mProfile));
+        }
+        mItems.add(new DndModeItem(mProfile));
+        mItems.add(new HeadsUpModeItem(mProfile));
+
+        // sound overrides
         mItems.add(new Header(R.string.profile_volumeoverrides_title));
+        mItems.add(new RingModeItem(mProfile.getRingMode()));
         mItems.add(generateVolumeStreamItem(AudioManager.STREAM_ALARM));
         mItems.add(generateVolumeStreamItem(AudioManager.STREAM_MUSIC));
         mItems.add(generateVolumeStreamItem(AudioManager.STREAM_RING));
         mItems.add(generateVolumeStreamItem(AudioManager.STREAM_NOTIFICATION));
 
+        // display overrides
+        mItems.add(new Header(R.string.display_settings_title));
+        mItems.add(new BrightnessItem(mProfile.getBrightness()));
+        if (DeviceUtils.isDozeAvailable(context)) {
+            mItems.add(new DozeModeItem(mProfile));
+        }
+
         // system settings
         mItems.add(new Header(R.string.profile_system_settings_title));
-        mItems.add(new RingModeItem(mProfile.getRingMode()));
-        mItems.add(new AirplaneModeItem(mProfile.getAirplaneMode()));
         DevicePolicyManager dpm = context.getSystemService(DevicePolicyManager.class);
         if (!dpm.requireSecureKeyguard()) {
             mItems.add(new LockModeItem(mProfile));
@@ -251,19 +268,8 @@ public class SetupActionsFragment extends SettingsPreferenceFragment
             mItems.add(new DisabledItem(R.string.profile_lockmode_title,
                     R.string.profile_lockmode_policy_disabled_summary));
         }
-        mItems.add(new BrightnessItem(mProfile.getBrightness()));
-
-        if (DeviceUtils.isDozeAvailable(context)) {
-            mItems.add(new DozeModeItem(mProfile));
-        }
-
-        if (getResources().getBoolean(
-                com.android.internal.R.bool.config_intrusiveNotificationLed)) {
-            mItems.add(new NotificationLightModeItem(mProfile));
-        }
-
-        mItems.add(new DndModeItem(mProfile));
-        mItems.add(new HeadsUpModeItem(mProfile));
+        mItems.add(generateConnectionOverrideItem(PROFILE_CONNECTION_LOCATION));
+        mItems.add(generateConnectionOverrideItem(PROFILE_CONNECTION_SYNC));
 
         mAdapter.notifyDataSetChanged();
     }

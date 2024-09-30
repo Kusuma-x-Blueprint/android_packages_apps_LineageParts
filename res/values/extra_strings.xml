@@ -22,6 +22,9 @@
     <string name="profile_tabs_app">App</string>
     <string name="dnd_title">Do Not Disturb</string>
     <string name="heads_up_title">Heads up</string>
+    <string name="connected_devices_settings_title">Connected devices</string>
+    <string name="notifications_settings_title">Notifications</string>
+    <string name="display_settings_title">Display</string>
 
     <!-- Encryption -->
     <string name="trust_feature_encryption_value_not_supported">Not supported</string>

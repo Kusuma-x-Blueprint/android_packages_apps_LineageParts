@@ -312,7 +312,7 @@
     <string name="profile_setup_actions_title">Step 2: Setup actions</string>
     <string name="profile_setup_actions_title_config">Reconfigure actions</string>
 
-    <string name="wireless_networks_settings_title">Wireless &amp; networks</string>
+    <string name="wireless_networks_settings_title">Network &amp; internet</string>
 
     <!-- Profile triggers -->
     <string name="no_bluetooth_triggers">No Bluetooth devices paired.\nTap to pair Bluetooth device before configuring triggers.</string>
@@ -373,7 +373,7 @@
     <string name="profile_networkmode_2g3g4g">2G/3G/LTE</string>
 
     <!-- Profile Config screen PreferenceGroup titles -->
-    <string name="profile_volumeoverrides_title">Volumes</string>
+    <string name="profile_volumeoverrides_title">Sound</string>
     <string name="connection_state_enabled">Enable</string>
     <string name="volume_override_summary">Set to %1$s/%2$s</string>
     <string name="profile_volume_override_checkbox_label">Use custom volume</string>
@@ -403,7 +403,7 @@
     <string name="soundtone_summary" translatable="false">""</string>
 
     <!-- Profiles - system settings -->
-    <string name="profile_system_settings_title">System settings</string>
+    <string name="profile_system_settings_title">Other controls</string>
     <string name="profile_lockmode_title">Screen lock</string>
     <string name="profile_lockmode_policy_disabled_summary">This profile option is disabled by a device administrator policy</string>
     <string name="profile_lockmode_insecure_summary">Don\'t ask for PIN or password</string>
