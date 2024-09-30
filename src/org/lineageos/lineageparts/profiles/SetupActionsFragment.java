@@ -63,8 +63,10 @@ import org.lineageos.lineageparts.profiles.actions.item.AirplaneModeItem;
 import org.lineageos.lineageparts.profiles.actions.item.BrightnessItem;
 import org.lineageos.lineageparts.profiles.actions.item.ConnectionOverrideItem;
 import org.lineageos.lineageparts.profiles.actions.item.DisabledItem;
+import org.lineageos.lineageparts.profiles.actions.item.DndModeItem;
 import org.lineageos.lineageparts.profiles.actions.item.DozeModeItem;
 import org.lineageos.lineageparts.profiles.actions.item.Header;
+import org.lineageos.lineageparts.profiles.actions.item.HeadsUpModeItem;
 import org.lineageos.lineageparts.profiles.actions.item.Item;
 import org.lineageos.lineageparts.profiles.actions.item.LockModeItem;
 import org.lineageos.lineageparts.profiles.actions.item.NotificationLightModeItem;
@@ -112,6 +114,8 @@ public class SetupActionsFragment extends SettingsPreferenceFragment
     private static final int DIALOG_REMOVE_PROFILE = 10;
 
     private static final int DIALOG_NOTIFICATION_LIGHT_MODE = 11;
+    private static final int DIALOG_DND_MODE = 12;
+    private static final int DIALOG_HEADS_UP_MODE = 13;
 
     private int mLastSelectedPosition = -1;
     private Item mSelectedItem;
@@ -135,6 +139,16 @@ public class SetupActionsFragment extends SettingsPreferenceFragment
             Profile.NotificationLightMode.DEFAULT,
             Profile.NotificationLightMode.ENABLE,
             Profile.NotificationLightMode.DISABLE
+    };
+    private static final int[] DND_MAPPING = new int[] {
+            Profile.DndMode.DEFAULT,
+            Profile.DndMode.ENABLE,
+            Profile.DndMode.DISABLE
+    };
+    private static final int[] HEADS_UP_MAPPING = new int[] {
+            Profile.HeadsUpMode.DEFAULT,
+            Profile.HeadsUpMode.ENABLE,
+            Profile.HeadsUpMode.DISABLE
     };
     private final List<Item> mItems = new ArrayList<>();
 
@@ -247,6 +261,9 @@ public class SetupActionsFragment extends SettingsPreferenceFragment
                 com.android.internal.R.bool.config_intrusiveNotificationLed)) {
             mItems.add(new NotificationLightModeItem(mProfile));
         }
+
+        mItems.add(new DndModeItem(mProfile));
+        mItems.add(new HeadsUpModeItem(mProfile));
 
         mAdapter.notifyDataSetChanged();
     }
@@ -501,6 +518,12 @@ public class SetupActionsFragment extends SettingsPreferenceFragment
             case DIALOG_NOTIFICATION_LIGHT_MODE:
                 return requestNotificationLightModeDialog();
 
+            case DIALOG_DND_MODE:
+                return requestDndModeDialog();
+
+            case DIALOG_HEADS_UP_MODE:
+                return requestHeadsUpModeDialog();
+
             case DIALOG_RING_MODE:
                 return requestRingModeDialog(((RingModeItem) mSelectedItem).getSettings());
 
@@ -628,6 +651,60 @@ public class SetupActionsFragment extends SettingsPreferenceFragment
         builder.setSingleChoiceItems(notificationLightEntries, defaultIndex,
                 (DialogInterface.OnClickListener) (dialog, item) -> {
             mProfile.setNotificationLightMode(NOTIFICATION_LIGHT_MAPPING[item]);
+            updateProfile();
+            mAdapter.notifyDataSetChanged();
+            dialog.dismiss();
+        });
+
+        builder.setNegativeButton(android.R.string.cancel, null);
+        final AlertDialog dialog = builder.create();
+        setDialogButtonsToNormalCase(dialog, null, android.R.string.cancel);
+        return dialog;
+    }
+
+    private AlertDialog requestDndModeDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        final String[] dndEntries =
+                getResources().getStringArray(R.array.profile_dnd_entries);
+        int defaultIndex = 0; // no action
+        for (int i = 0; i < DND_MAPPING.length; i++) {
+            if (DND_MAPPING[i] == mProfile.getDndMode()) {
+                defaultIndex = i;
+                break;
+            }
+        }
+
+        builder.setTitle(R.string.dnd_title);
+        builder.setSingleChoiceItems(dndEntries, defaultIndex,
+                (DialogInterface.OnClickListener) (dialog, item) -> {
+            mProfile.setDndMode(DND_MAPPING[item]);
+            updateProfile();
+            mAdapter.notifyDataSetChanged();
+            dialog.dismiss();
+        });
+
+        builder.setNegativeButton(android.R.string.cancel, null);
+        final AlertDialog dialog = builder.create();
+        setDialogButtonsToNormalCase(dialog, null, android.R.string.cancel);
+        return dialog;
+    }
+
+    private AlertDialog requestHeadsUpModeDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        final String[] headsUpEntries =
+                getResources().getStringArray(R.array.profile_heads_up_entries);
+        int defaultIndex = 0; // no action
+        for (int i = 0; i < HEADS_UP_MAPPING.length; i++) {
+            if (HEADS_UP_MAPPING[i] == mProfile.getHeadsUpMode()) {
+                defaultIndex = i;
+                break;
+            }
+        }
+
+        builder.setTitle(R.string.heads_up_title);
+        builder.setSingleChoiceItems(headsUpEntries, defaultIndex,
+                (DialogInterface.OnClickListener) (dialog, item) -> {
+            mProfile.setHeadsUpMode(HEADS_UP_MAPPING[item]);
             updateProfile();
             mAdapter.notifyDataSetChanged();
             dialog.dismiss();
@@ -933,6 +1010,10 @@ public class SetupActionsFragment extends SettingsPreferenceFragment
             showDialog(DIALOG_DOZE_MODE);
         } else if (item instanceof NotificationLightModeItem) {
             showDialog(DIALOG_NOTIFICATION_LIGHT_MODE);
+        } else if (item instanceof DndModeItem) {
+            showDialog(DIALOG_DND_MODE);
+        } else if (item instanceof HeadsUpModeItem) {
+            showDialog(DIALOG_HEADS_UP_MODE);
         } else if (item instanceof RingModeItem) {
             showDialog(DIALOG_RING_MODE);
         } else if (item instanceof ConnectionOverrideItem) {

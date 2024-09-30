@@ -20,6 +20,8 @@
     <string name="profiles_rename">Rename</string>
     <string name="no_triggers_configured_app">Tap to setup a new app trigger</string>
     <string name="profile_tabs_app">App</string>
+    <string name="dnd_title">Do Not Disturb</string>
+    <string name="heads_up_title">Heads up</string>
 
     <!-- Encryption -->
     <string name="trust_feature_encryption_value_not_supported">Not supported</string>

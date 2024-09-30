@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     SPDX-FileCopyrightText: 2012-2015 The CyanogenMod Project
+     SPDX-FileCopyrightText: 2017-2023 The LineageOS Project
+     SPDX-License-Identifier: Apache-2.0
+-->
+<resources>
+    <string-array name="profile_dnd_entries" translatable="false">
+        <item>@string/profile_action_none</item>
+        <item>@string/profile_action_enable</item>
+        <item>@string/profile_action_disable</item>
+    </string-array>
+    
+    <string-array name="profile_heads_up_entries" translatable="false">
+        <item>@string/profile_action_none</item>
+        <item>@string/profile_action_enable</item>
+        <item>@string/profile_action_disable</item>
+    </string-array>
+</resources>
