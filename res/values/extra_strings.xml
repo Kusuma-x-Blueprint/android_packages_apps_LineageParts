@@ -18,6 +18,8 @@
     <string name="profiles_create_new_actions">Setup actions</string>
     <string name="profiles_create_new_triggers">Add triggers</string>
     <string name="profiles_rename">Rename</string>
+    <string name="no_triggers_configured_app">Tap to setup a new app trigger</string>
+    <string name="profile_tabs_app">App</string>
 
     <!-- Encryption -->
     <string name="trust_feature_encryption_value_not_supported">Not supported</string>

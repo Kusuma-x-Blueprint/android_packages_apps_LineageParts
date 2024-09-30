@@ -10,6 +10,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.app.admin.DevicePolicyManager;
 import android.bluetooth.BluetoothManager;
+import android.content.pm.PackageManager;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -198,6 +199,7 @@ public class SetupActionsFragment extends SettingsPreferenceFragment
                 mItems.add(generateTriggerItem(TriggerItem.NFC));
             }
             mItems.add(generateTriggerItem(TriggerItem.TIME));
+            mItems.add(generateTriggerItem(TriggerItem.APP));
         }
 
         // connection overrides
