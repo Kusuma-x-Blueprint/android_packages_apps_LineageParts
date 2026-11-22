@@ -46,8 +46,6 @@ public class ButtonSettings extends SettingsPreferenceFragment
     private static final String KEY_CAMERA_LAUNCH = "camera_launch";
     private static final String KEY_CAMERA_SLEEP_ON_RELEASE = "camera_sleep_on_release";
     private static final String KEY_CAMERA_WAKE_SCREEN = "camera_wake_screen";
-    private static final String KEY_CLICK_PARTIAL_SCREENSHOT =
-            "click_partial_screenshot";
     public static final String KEY_SWAP_CAPACITIVE_KEYS = "swap_capacitive_keys";
 
     private static final String CATEGORY_CAMERA = "camera_key";
@@ -71,7 +69,6 @@ public class ButtonSettings extends SettingsPreferenceFragment
         final PreferenceScreen prefScreen = getPreferenceScreen();
 
         final boolean hasCameraKey = DeviceUtils.hasCameraKey(getActivity());
-        final boolean hasVolumeKeys = DeviceUtils.hasVolumeKeys(getActivity());
 
         final boolean showCameraWake = DeviceUtils.canWakeUsingCameraKey(getActivity());
 
@@ -93,10 +90,6 @@ public class ButtonSettings extends SettingsPreferenceFragment
         }
         if (!hasCameraKey || cameraCategory.getPreferenceCount() == 0) {
             prefScreen.removePreference(cameraCategory);
-        }
-
-        if (!hasVolumeKeys) {
-            extrasCategory.removePreference(findPreference(KEY_CLICK_PARTIAL_SCREENSHOT));
         }
 
         if (mCameraWakeScreen != null) {
@@ -162,10 +155,6 @@ public class ButtonSettings extends SettingsPreferenceFragment
                 result.add(KEY_CAMERA_WAKE_SCREEN);
             } else if (!DeviceUtils.canWakeUsingCameraKey(context)) {
                 result.add(KEY_CAMERA_WAKE_SCREEN);
-            }
-
-            if (!DeviceUtils.hasVolumeKeys(context)) {
-                result.add(KEY_CLICK_PARTIAL_SCREENSHOT);
             }
 
             return result;
