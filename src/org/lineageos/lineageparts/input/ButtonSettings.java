@@ -46,18 +46,12 @@ public class ButtonSettings extends SettingsPreferenceFragment
         implements Preference.OnPreferenceChangeListener, Searchable {
     private static final String TAG = "SystemSettings";
 
-    private static final String KEY_BACK_WAKE_SCREEN = "back_wake_screen";
     private static final String KEY_CAMERA_LAUNCH = "camera_launch";
     private static final String KEY_CAMERA_SLEEP_ON_RELEASE = "camera_sleep_on_release";
     private static final String KEY_CAMERA_WAKE_SCREEN = "camera_wake_screen";
-    private static final String KEY_HOME_WAKE_SCREEN = "home_wake_screen";
-    private static final String KEY_MENU_WAKE_SCREEN = "menu_wake_screen";
-    private static final String KEY_ASSIST_WAKE_SCREEN = "assist_wake_screen";
-    private static final String KEY_APP_SWITCH_WAKE_SCREEN = "app_switch_wake_screen";
     private static final String KEY_VOLUME_KEY_CURSOR_CONTROL = "volume_key_cursor_control";
     private static final String KEY_SWAP_VOLUME_BUTTONS = "swap_volume_buttons";
     private static final String KEY_VOLUME_PANEL_POSITION = "volume_panel_on_left";
-    private static final String KEY_VOLUME_WAKE_SCREEN = "volume_wake_screen";
     private static final String KEY_VOLUME_ANSWER_CALL = "volume_answer_call";
     private static final String KEY_POWER_END_CALL = "power_end_call";
     private static final String KEY_HOME_ANSWER_CALL = "home_answer_call";
@@ -72,10 +66,6 @@ public class ButtonSettings extends SettingsPreferenceFragment
 
     private static final String CATEGORY_POWER = "power_key";
     private static final String CATEGORY_HOME = "home_key";
-    private static final String CATEGORY_BACK = "back_key";
-    private static final String CATEGORY_MENU = "menu_key";
-    private static final String CATEGORY_ASSIST = "assist_key";
-    private static final String CATEGORY_APPSWITCH = "app_switch_key";
     private static final String CATEGORY_CAMERA = "camera_key";
     private static final String CATEGORY_VOLUME = "volume_keys";
     private static final String CATEGORY_EXTRAS = "extras_category";
@@ -106,27 +96,13 @@ public class ButtonSettings extends SettingsPreferenceFragment
 
         final boolean hasPowerKey = DeviceUtils.hasPowerKey();
         final boolean hasHomeKey = DeviceUtils.hasHomeKey(getActivity());
-        final boolean hasBackKey = DeviceUtils.hasBackKey(getActivity());
-        final boolean hasMenuKey = DeviceUtils.hasMenuKey(getActivity());
-        final boolean hasAssistKey = DeviceUtils.hasAssistKey(getActivity());
-        final boolean hasAppSwitchKey = DeviceUtils.hasAppSwitchKey(getActivity());
         final boolean hasCameraKey = DeviceUtils.hasCameraKey(getActivity());
         final boolean hasVolumeKeys = DeviceUtils.hasVolumeKeys(getActivity());
 
-        final boolean showHomeWake = DeviceUtils.canWakeUsingHomeKey(getActivity());
-        final boolean showBackWake = DeviceUtils.canWakeUsingBackKey(getActivity());
-        final boolean showMenuWake = DeviceUtils.canWakeUsingMenuKey(getActivity());
-        final boolean showAssistWake = DeviceUtils.canWakeUsingAssistKey(getActivity());
-        final boolean showAppSwitchWake = DeviceUtils.canWakeUsingAppSwitchKey(getActivity());
         final boolean showCameraWake = DeviceUtils.canWakeUsingCameraKey(getActivity());
-        final boolean showVolumeWake = DeviceUtils.canWakeUsingVolumeKeys(getActivity());
 
         final PreferenceCategory powerCategory = prefScreen.findPreference(CATEGORY_POWER);
         final PreferenceCategory homeCategory = prefScreen.findPreference(CATEGORY_HOME);
-        final PreferenceCategory backCategory = prefScreen.findPreference(CATEGORY_BACK);
-        final PreferenceCategory menuCategory = prefScreen.findPreference(CATEGORY_MENU);
-        final PreferenceCategory assistCategory = prefScreen.findPreference(CATEGORY_ASSIST);
-        final PreferenceCategory appSwitchCategory = prefScreen.findPreference(CATEGORY_APPSWITCH);
         final PreferenceCategory volumeCategory = prefScreen.findPreference(CATEGORY_VOLUME);
         final PreferenceCategory cameraCategory = prefScreen.findPreference(CATEGORY_CAMERA);
         final PreferenceCategory extrasCategory = prefScreen.findPreference(CATEGORY_EXTRAS);
@@ -162,10 +138,6 @@ public class ButtonSettings extends SettingsPreferenceFragment
         }
 
         if (hasHomeKey) {
-            if (!showHomeWake) {
-                homeCategory.removePreference(findPreference(KEY_HOME_WAKE_SCREEN));
-            }
-
             if (!TelephonyUtils.isVoiceCapable(requireActivity())) {
                 homeCategory.removePreference(mHomeAnswerCall);
                 mHomeAnswerCall = null;
@@ -173,42 +145,6 @@ public class ButtonSettings extends SettingsPreferenceFragment
         }
         if (!hasHomeKey || homeCategory.getPreferenceCount() == 0) {
             prefScreen.removePreference(homeCategory);
-        }
-
-        if (hasBackKey) {
-            if (!showBackWake) {
-                backCategory.removePreference(findPreference(KEY_BACK_WAKE_SCREEN));
-            }
-        }
-        if (!hasBackKey || backCategory.getPreferenceCount() == 0) {
-            prefScreen.removePreference(backCategory);
-        }
-
-        if (hasMenuKey) {
-            if (!showMenuWake) {
-                menuCategory.removePreference(findPreference(KEY_MENU_WAKE_SCREEN));
-            }
-        }
-        if (!hasMenuKey || menuCategory.getPreferenceCount() == 0) {
-            prefScreen.removePreference(menuCategory);
-        }
-
-        if (hasAssistKey) {
-            if (!showAssistWake) {
-                assistCategory.removePreference(findPreference(KEY_ASSIST_WAKE_SCREEN));
-            }
-        }
-        if (!hasAssistKey || assistCategory.getPreferenceCount() == 0) {
-            prefScreen.removePreference(assistCategory);
-        }
-
-        if (hasAppSwitchKey) {
-            if (!showAppSwitchWake) {
-                appSwitchCategory.removePreference(findPreference(KEY_APP_SWITCH_WAKE_SCREEN));
-            }
-        }
-        if (!hasAppSwitchKey || appSwitchCategory.getPreferenceCount() == 0) {
-            prefScreen.removePreference(appSwitchCategory);
         }
 
         if (hasCameraKey) {
@@ -229,10 +165,6 @@ public class ButtonSettings extends SettingsPreferenceFragment
         }
 
         if (hasVolumeKeys) {
-            if (!showVolumeWake) {
-                volumeCategory.removePreference(findPreference(KEY_VOLUME_WAKE_SCREEN));
-            }
-
             if (!TelephonyUtils.isVoiceCapable(requireActivity())) {
                 volumeCategory.removePreference(findPreference(KEY_VOLUME_ANSWER_CALL));
             }
@@ -444,40 +376,9 @@ public class ButtonSettings extends SettingsPreferenceFragment
                 result.add(KEY_VOLUME_ANSWER_CALL);
             }
 
-            if (!DeviceUtils.hasBackKey(context)) {
-                result.add(CATEGORY_BACK);
-                result.add(KEY_BACK_WAKE_SCREEN);
-            } else if (!DeviceUtils.canWakeUsingHomeKey(context)) {
-                result.add(KEY_BACK_WAKE_SCREEN);
-            }
-
             if (!DeviceUtils.hasHomeKey(context)) {
                 result.add(CATEGORY_HOME);
                 result.add(KEY_HOME_ANSWER_CALL);
-                result.add(KEY_HOME_WAKE_SCREEN);
-            } else if (!DeviceUtils.canWakeUsingHomeKey(context)) {
-                result.add(KEY_HOME_WAKE_SCREEN);
-            }
-
-            if (!DeviceUtils.hasMenuKey(context)) {
-                result.add(CATEGORY_MENU);
-                result.add(KEY_MENU_WAKE_SCREEN);
-            } else if (!DeviceUtils.canWakeUsingMenuKey(context)) {
-                result.add(KEY_MENU_WAKE_SCREEN);
-            }
-
-            if (!DeviceUtils.hasAssistKey(context)) {
-                result.add(CATEGORY_ASSIST);
-                result.add(KEY_ASSIST_WAKE_SCREEN);
-            } else if (!DeviceUtils.canWakeUsingAssistKey(context)) {
-                result.add(KEY_ASSIST_WAKE_SCREEN);
-            }
-
-            if (!DeviceUtils.hasAppSwitchKey(context)) {
-                result.add(CATEGORY_APPSWITCH);
-                result.add(KEY_APP_SWITCH_WAKE_SCREEN);
-            } else if (!DeviceUtils.canWakeUsingAppSwitchKey(context)) {
-                result.add(KEY_APP_SWITCH_WAKE_SCREEN);
             }
 
             if (!DeviceUtils.hasCameraKey(context)) {
@@ -496,10 +397,7 @@ public class ButtonSettings extends SettingsPreferenceFragment
                 result.add(KEY_VOLUME_KEY_CURSOR_CONTROL);
                 result.add(KEY_VOLUME_MUSIC_CONTROLS);
                 result.add(KEY_VOLUME_PANEL_POSITION);
-                result.add(KEY_VOLUME_WAKE_SCREEN);
                 result.add(KEY_CLICK_PARTIAL_SCREENSHOT);
-            } else if (!DeviceUtils.canWakeUsingVolumeKeys(context)) {
-                result.add(KEY_VOLUME_WAKE_SCREEN);
             }
 
             if (!DeviceUtils.deviceSupportsFlashLight(context)) {
