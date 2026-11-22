@@ -47,7 +47,6 @@ public class ButtonSettings extends SettingsPreferenceFragment
     private static final String KEY_CAMERA_SLEEP_ON_RELEASE = "camera_sleep_on_release";
     private static final String KEY_CAMERA_WAKE_SCREEN = "camera_wake_screen";
     private static final String KEY_VOLUME_KEY_CURSOR_CONTROL = "volume_key_cursor_control";
-    private static final String KEY_VOLUME_MUSIC_CONTROLS = "volbtn_music_controls";
     private static final String KEY_CLICK_PARTIAL_SCREENSHOT =
             "click_partial_screenshot";
     public static final String KEY_SWAP_CAPACITIVE_KEYS = "swap_capacitive_keys";
@@ -201,7 +200,6 @@ public class ButtonSettings extends SettingsPreferenceFragment
             if (!DeviceUtils.hasVolumeKeys(context)) {
                 result.add(CATEGORY_VOLUME);
                 result.add(KEY_VOLUME_KEY_CURSOR_CONTROL);
-                result.add(KEY_VOLUME_MUSIC_CONTROLS);
                 result.add(KEY_CLICK_PARTIAL_SCREENSHOT);
             }
 
