@@ -33,6 +33,7 @@ public class BootReceiver extends BroadcastReceiver {
         // Toggle visibility of some settings regardless of user type
         LiveDisplaySettings.restoreLiveDisplay(ctx);
         TouchscreenGestureSettings.restoreTouchscreenGestures(ctx);
+        ButtonSettings.restoreButtonSettings(ctx);
 
         if (!ctx.getSystemService(UserManager.class).isPrimaryUser()) {
             Log.d(TAG, "Not running as the primary user, skipping tunable restoration.");

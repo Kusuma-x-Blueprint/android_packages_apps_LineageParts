@@ -6,9 +6,6 @@
 
 package org.lineageos.lineageparts.input;
 
-import static org.lineageos.internal.util.DeviceKeysConstants.*;
-
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
@@ -16,10 +13,7 @@ import android.os.Bundle;
 import android.os.UserHandle;
 import android.provider.Settings;
 import android.util.ArraySet;
-import android.util.Log;
 
-import androidx.preference.ListPreference;
-import androidx.preference.Preference;
 import androidx.preference.PreferenceCategory;
 import androidx.preference.PreferenceManager;
 import androidx.preference.PreferenceScreen;
@@ -33,19 +27,20 @@ import org.lineageos.lineageparts.SettingsPreferenceFragment;
 import org.lineageos.lineageparts.search.BaseSearchIndexProvider;
 import org.lineageos.lineageparts.search.Searchable;
 import org.lineageos.lineageparts.utils.DeviceUtils;
+import org.lineageos.lineageparts.utils.GenericUtils;
+import org.lineageos.preference.ConstraintsHelper;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Set;
 
-public class ButtonSettings extends SettingsPreferenceFragment
-        implements Preference.OnPreferenceChangeListener, Searchable {
-    private static final String TAG = "SystemSettings";
+public class ButtonSettings extends SettingsPreferenceFragment implements Searchable {
+
+    public static final String ACTION_ADDITIONAL_BUTTONS_SETTINGS =
+            "org.lineageos.settings.device.ADDITIONAL_BUTTONS_SETTINGS";
 
     private static final String KEY_CAMERA_LAUNCH = "camera_launch";
     private static final String KEY_CAMERA_SLEEP_ON_RELEASE = "camera_sleep_on_release";
     private static final String KEY_CAMERA_WAKE_SCREEN = "camera_wake_screen";
+    private static final String KEY_ADDITIONAL_BUTTONS = "additional_buttons";
     public static final String KEY_SWAP_CAPACITIVE_KEYS = "swap_capacitive_keys";
 
     private static final String CATEGORY_CAMERA = "camera_key";
@@ -54,22 +49,21 @@ public class ButtonSettings extends SettingsPreferenceFragment
     private SwitchPreferenceCompat mCameraWakeScreen;
     private SwitchPreferenceCompat mCameraSleepOnRelease;
 
-    private LineageHardwareManager mHardware;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mHardware = LineageHardwareManager.getInstance(getActivity());
+        if (!isSupported(getActivity())) {
+            finish();
+            return;
+        }
 
         addPreferencesFromResource(R.xml.button_settings);
 
         final Resources res = getResources();
-        final ContentResolver resolver = requireActivity().getContentResolver();
         final PreferenceScreen prefScreen = getPreferenceScreen();
 
         final boolean hasCameraKey = DeviceUtils.hasCameraKey(getActivity());
-
         final boolean showCameraWake = DeviceUtils.canWakeUsingCameraKey(getActivity());
 
         final PreferenceCategory cameraCategory = prefScreen.findPreference(CATEGORY_CAMERA);
@@ -92,6 +86,10 @@ public class ButtonSettings extends SettingsPreferenceFragment
             prefScreen.removePreference(cameraCategory);
         }
 
+        if (!hasAdditionalButtons(getActivity()) || extrasCategory.getPreferenceCount() == 0) {
+            prefScreen.removePreference(extrasCategory);
+        }
+
         if (mCameraWakeScreen != null) {
             if (mCameraSleepOnRelease != null && !res.getBoolean(
                     org.lineageos.platform.internal.R.bool.config_singleStageCameraKey)) {
@@ -100,9 +98,17 @@ public class ButtonSettings extends SettingsPreferenceFragment
         }
     }
 
-    @Override
-    public boolean onPreferenceChange(Preference preference, Object newValue) {
-        return false;
+    public static boolean hasAdditionalButtons(Context context) {
+        return ConstraintsHelper.resolveIntent(context, ACTION_ADDITIONAL_BUTTONS_SETTINGS);
+    }
+
+    public static boolean isSupported(Context context) {
+        return DeviceUtils.hasCameraKey(context) || hasAdditionalButtons(context);
+    }
+
+    public static void restoreButtonSettings(Context context) {
+        GenericUtils.setComponentEnabled(context, ButtonSettings.class.getName(),
+                isSupported(context));
     }
 
     private static boolean isKeyDisablerSupported(Context context) {
@@ -155,6 +161,11 @@ public class ButtonSettings extends SettingsPreferenceFragment
                 result.add(KEY_CAMERA_WAKE_SCREEN);
             } else if (!DeviceUtils.canWakeUsingCameraKey(context)) {
                 result.add(KEY_CAMERA_WAKE_SCREEN);
+            }
+
+            if (!hasAdditionalButtons(context)) {
+                result.add(CATEGORY_EXTRAS);
+                result.add(KEY_ADDITIONAL_BUTTONS);
             }
 
             return result;
