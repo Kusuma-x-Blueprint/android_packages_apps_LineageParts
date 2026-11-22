@@ -35,7 +35,6 @@ import org.lineageos.lineageparts.SettingsPreferenceFragment;
 import org.lineageos.lineageparts.search.BaseSearchIndexProvider;
 import org.lineageos.lineageparts.search.Searchable;
 import org.lineageos.lineageparts.utils.DeviceUtils;
-import org.lineageos.lineageparts.utils.TelephonyUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -52,9 +51,6 @@ public class ButtonSettings extends SettingsPreferenceFragment
     private static final String KEY_VOLUME_KEY_CURSOR_CONTROL = "volume_key_cursor_control";
     private static final String KEY_SWAP_VOLUME_BUTTONS = "swap_volume_buttons";
     private static final String KEY_VOLUME_PANEL_POSITION = "volume_panel_on_left";
-    private static final String KEY_VOLUME_ANSWER_CALL = "volume_answer_call";
-    private static final String KEY_POWER_END_CALL = "power_end_call";
-    private static final String KEY_HOME_ANSWER_CALL = "home_answer_call";
     private static final String KEY_VOLUME_MUSIC_CONTROLS = "volbtn_music_controls";
     private static final String KEY_TORCH_LONG_PRESS_POWER_GESTURE =
             "torch_long_press_power_gesture";
@@ -65,7 +61,6 @@ public class ButtonSettings extends SettingsPreferenceFragment
     public static final String KEY_SWAP_CAPACITIVE_KEYS = "swap_capacitive_keys";
 
     private static final String CATEGORY_POWER = "power_key";
-    private static final String CATEGORY_HOME = "home_key";
     private static final String CATEGORY_CAMERA = "camera_key";
     private static final String CATEGORY_VOLUME = "volume_keys";
     private static final String CATEGORY_EXTRAS = "extras_category";
@@ -74,8 +69,6 @@ public class ButtonSettings extends SettingsPreferenceFragment
     private SwitchPreferenceCompat mCameraSleepOnRelease;
     private ListPreference mVolumeKeyCursorControl;
     private SwitchPreferenceCompat mSwapVolumeButtons;
-    private SwitchPreferenceCompat mPowerEndCall;
-    private SwitchPreferenceCompat mHomeAnswerCall;
     private ListPreference mTorchLongPressPowerTimeout;
 
     private Handler mHandler;
@@ -95,20 +88,15 @@ public class ButtonSettings extends SettingsPreferenceFragment
         final PreferenceScreen prefScreen = getPreferenceScreen();
 
         final boolean hasPowerKey = DeviceUtils.hasPowerKey();
-        final boolean hasHomeKey = DeviceUtils.hasHomeKey(getActivity());
         final boolean hasCameraKey = DeviceUtils.hasCameraKey(getActivity());
         final boolean hasVolumeKeys = DeviceUtils.hasVolumeKeys(getActivity());
 
         final boolean showCameraWake = DeviceUtils.canWakeUsingCameraKey(getActivity());
 
         final PreferenceCategory powerCategory = prefScreen.findPreference(CATEGORY_POWER);
-        final PreferenceCategory homeCategory = prefScreen.findPreference(CATEGORY_HOME);
         final PreferenceCategory volumeCategory = prefScreen.findPreference(CATEGORY_VOLUME);
         final PreferenceCategory cameraCategory = prefScreen.findPreference(CATEGORY_CAMERA);
         final PreferenceCategory extrasCategory = prefScreen.findPreference(CATEGORY_EXTRAS);
-
-        // Power button ends calls.
-        mPowerEndCall = findPreference(KEY_POWER_END_CALL);
 
         // Long press power while display is off to activate torchlight
         SwitchPreferenceCompat torchLongPressPowerGesture =
@@ -118,16 +106,9 @@ public class ButtonSettings extends SettingsPreferenceFragment
         mTorchLongPressPowerTimeout = initList(KEY_TORCH_LONG_PRESS_POWER_TIMEOUT,
                 torchLongPressPowerTimeout);
 
-        // Home button answers calls.
-        mHomeAnswerCall = findPreference(KEY_HOME_ANSWER_CALL);
-
         mHandler = new Handler(Looper.getMainLooper());
 
         if (hasPowerKey) {
-            if (!TelephonyUtils.isVoiceCapable(requireActivity())) {
-                powerCategory.removePreference(mPowerEndCall);
-                mPowerEndCall = null;
-            }
             if (!DeviceUtils.deviceSupportsFlashLight(requireActivity())) {
                 powerCategory.removePreference(torchLongPressPowerGesture);
                 powerCategory.removePreference(mTorchLongPressPowerTimeout);
@@ -135,16 +116,6 @@ public class ButtonSettings extends SettingsPreferenceFragment
         }
         if (!hasPowerKey || powerCategory.getPreferenceCount() == 0) {
             prefScreen.removePreference(powerCategory);
-        }
-
-        if (hasHomeKey) {
-            if (!TelephonyUtils.isVoiceCapable(requireActivity())) {
-                homeCategory.removePreference(mHomeAnswerCall);
-                mHomeAnswerCall = null;
-            }
-        }
-        if (!hasHomeKey || homeCategory.getPreferenceCount() == 0) {
-            prefScreen.removePreference(homeCategory);
         }
 
         if (hasCameraKey) {
@@ -165,10 +136,6 @@ public class ButtonSettings extends SettingsPreferenceFragment
         }
 
         if (hasVolumeKeys) {
-            if (!TelephonyUtils.isVoiceCapable(requireActivity())) {
-                volumeCategory.removePreference(findPreference(KEY_VOLUME_ANSWER_CALL));
-            }
-
             int cursorControlAction = Settings.System.getInt(resolver,
                     Settings.System.VOLUME_KEY_CURSOR_CONTROL, 0);
             mVolumeKeyCursorControl = initList(KEY_VOLUME_KEY_CURSOR_CONTROL,
@@ -193,44 +160,6 @@ public class ButtonSettings extends SettingsPreferenceFragment
                 mCameraSleepOnRelease.setDependency(KEY_CAMERA_WAKE_SCREEN);
             }
         }
-
-        SwitchPreferenceCompat volumeWakeScreen = findPreference(KEY_VOLUME_WAKE_SCREEN);
-        SwitchPreferenceCompat volumeMusicControls = findPreference(KEY_VOLUME_MUSIC_CONTROLS);
-
-        if (volumeWakeScreen != null) {
-            if (volumeMusicControls != null) {
-                volumeMusicControls.setDependency(KEY_VOLUME_WAKE_SCREEN);
-                volumeWakeScreen.setDisableDependentsState(true);
-            }
-        }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        // Power button ends calls.
-        if (mPowerEndCall != null) {
-            final int incallPowerBehavior = Settings.Secure.getInt(getContentResolver(),
-                    Settings.Secure.INCALL_POWER_BUTTON_BEHAVIOR,
-                    Settings.Secure.INCALL_POWER_BUTTON_BEHAVIOR_DEFAULT);
-            final boolean powerButtonEndsCall =
-                    (incallPowerBehavior == Settings.Secure.INCALL_POWER_BUTTON_BEHAVIOR_HANGUP);
-            mPowerEndCall.setChecked(powerButtonEndsCall);
-        }
-
-        // Home button answers calls.
-        if (mHomeAnswerCall != null) {
-            final int incallHomeBehavior = LineageSettings.Secure.getInt(getContentResolver(),
-                    LineageSettings.Secure.RING_HOME_BUTTON_BEHAVIOR,
-                    LineageSettings.Secure.RING_HOME_BUTTON_BEHAVIOR_DEFAULT);
-            final boolean homeButtonAnswersCall =
-                (incallHomeBehavior == LineageSettings.Secure.RING_HOME_BUTTON_BEHAVIOR_ANSWER);
-            mHomeAnswerCall.setChecked(homeButtonAnswersCall);
-        }
-
-        final boolean navbarForced = isNavbarForced(getActivity());
-        enablePreference(mHomeAnswerCall, !navbarForced);
     }
 
     private ListPreference initList(String key, int value) {
@@ -268,18 +197,6 @@ public class ButtonSettings extends SettingsPreferenceFragment
             return true;
         }
         return false;
-    }
-
-    private void enablePreference(Preference pref, boolean enabled) {
-        if (pref != null) {
-            pref.setEnabled(enabled);
-        }
-    }
-
-    private static boolean isNavbarForced(Context context) {
-        return LineageSettings.System.getIntForUser(
-                context.getContentResolver(),
-                LineageSettings.System.FORCE_SHOW_NAVBAR, 0, UserHandle.USER_CURRENT) != 0;
     }
 
     private static boolean isKeyDisablerSupported(Context context) {
@@ -338,29 +255,9 @@ public class ButtonSettings extends SettingsPreferenceFragment
             }
             LineageSettings.System.putInt(requireActivity().getContentResolver(),
                     LineageSettings.System.SWAP_VOLUME_KEYS_ON_ROTATION, value);
-        } else if (preference == mPowerEndCall) {
-            handleTogglePowerButtonEndsCallPreferenceClick();
-            return true;
-        } else if (preference == mHomeAnswerCall) {
-            handleToggleHomeButtonAnswersCallPreferenceClick();
-            return true;
         }
 
         return super.onPreferenceTreeClick(preference);
-    }
-
-    private void handleTogglePowerButtonEndsCallPreferenceClick() {
-        Settings.Secure.putInt(getContentResolver(),
-                Settings.Secure.INCALL_POWER_BUTTON_BEHAVIOR, (mPowerEndCall.isChecked()
-                        ? Settings.Secure.INCALL_POWER_BUTTON_BEHAVIOR_HANGUP
-                        : Settings.Secure.INCALL_POWER_BUTTON_BEHAVIOR_SCREEN_OFF));
-    }
-
-    private void handleToggleHomeButtonAnswersCallPreferenceClick() {
-        LineageSettings.Secure.putInt(getContentResolver(),
-                LineageSettings.Secure.RING_HOME_BUTTON_BEHAVIOR, (mHomeAnswerCall.isChecked()
-                        ? LineageSettings.Secure.RING_HOME_BUTTON_BEHAVIOR_ANSWER
-                        : LineageSettings.Secure.RING_HOME_BUTTON_BEHAVIOR_DO_NOTHING));
     }
 
     public static final Searchable.SearchIndexProvider SEARCH_INDEX_DATA_PROVIDER =
@@ -369,17 +266,6 @@ public class ButtonSettings extends SettingsPreferenceFragment
         @Override
         public Set<String> getNonIndexableKeys(Context context) {
             final Set<String> result = new ArraySet<>();
-
-            if (!TelephonyUtils.isVoiceCapable(context)) {
-                result.add(KEY_POWER_END_CALL);
-                result.add(KEY_HOME_ANSWER_CALL);
-                result.add(KEY_VOLUME_ANSWER_CALL);
-            }
-
-            if (!DeviceUtils.hasHomeKey(context)) {
-                result.add(CATEGORY_HOME);
-                result.add(KEY_HOME_ANSWER_CALL);
-            }
 
             if (!DeviceUtils.hasCameraKey(context)) {
                 result.add(CATEGORY_CAMERA);
@@ -393,7 +279,6 @@ public class ButtonSettings extends SettingsPreferenceFragment
             if (!DeviceUtils.hasVolumeKeys(context)) {
                 result.add(CATEGORY_VOLUME);
                 result.add(KEY_SWAP_VOLUME_BUTTONS);
-                result.add(KEY_VOLUME_ANSWER_CALL);
                 result.add(KEY_VOLUME_KEY_CURSOR_CONTROL);
                 result.add(KEY_VOLUME_MUSIC_CONTROLS);
                 result.add(KEY_VOLUME_PANEL_POSITION);

@@ -17,12 +17,6 @@
         android:key="power_key"
         android:title="@string/hardware_keys_power_key_title" >
 
-        <SwitchPreferenceCompat
-            android:key="power_end_call"
-            android:title="@string/power_end_call_title"
-            android:summary="@string/power_end_call_summary"
-            android:persistent="false"/>
-
         <lineageos.preference.LineageSystemSettingSwitchPreference
             android:key="torch_long_press_power_gesture"
             android:title="@string/torch_long_press_power_gesture_title"
@@ -38,18 +32,6 @@
             android:entryValues="@array/torch_long_press_power_timeout_values"
             android:dependency="torch_long_press_power_gesture"
             android:persistent="false" />
-
-    </PreferenceCategory>
-
-    <PreferenceCategory
-        android:key="home_key"
-        android:title="@string/hardware_keys_home_key_title" >
-
-        <SwitchPreferenceCompat
-            android:key="home_answer_call"
-            android:title="@string/home_answer_call_title"
-            android:summary="@string/home_answer_call_summary"
-            android:persistent="false"/>
 
     </PreferenceCategory>
 
@@ -79,12 +61,6 @@
     <PreferenceCategory
         android:key="volume_keys"
         android:title="@string/hardware_keys_volume_keys_title" >
-
-        <lineageos.preference.LineageSystemSettingSwitchPreference
-            android:key="volume_answer_call"
-            android:title="@string/volume_answer_call_title"
-            android:summary="@string/volume_answer_call_summary"
-            android:defaultValue="false" />
 
         <lineageos.preference.LineageSystemSettingSwitchPreference
             android:key="volbtn_music_controls"
