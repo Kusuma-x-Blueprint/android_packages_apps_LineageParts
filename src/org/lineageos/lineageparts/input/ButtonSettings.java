@@ -13,8 +13,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.os.UserHandle;
 import android.provider.Settings;
 import android.util.ArraySet;
@@ -50,15 +48,10 @@ public class ButtonSettings extends SettingsPreferenceFragment
     private static final String KEY_CAMERA_WAKE_SCREEN = "camera_wake_screen";
     private static final String KEY_VOLUME_KEY_CURSOR_CONTROL = "volume_key_cursor_control";
     private static final String KEY_VOLUME_MUSIC_CONTROLS = "volbtn_music_controls";
-    private static final String KEY_TORCH_LONG_PRESS_POWER_GESTURE =
-            "torch_long_press_power_gesture";
-    private static final String KEY_TORCH_LONG_PRESS_POWER_TIMEOUT =
-            "torch_long_press_power_timeout";
     private static final String KEY_CLICK_PARTIAL_SCREENSHOT =
             "click_partial_screenshot";
     public static final String KEY_SWAP_CAPACITIVE_KEYS = "swap_capacitive_keys";
 
-    private static final String CATEGORY_POWER = "power_key";
     private static final String CATEGORY_CAMERA = "camera_key";
     private static final String CATEGORY_VOLUME = "volume_keys";
     private static final String CATEGORY_EXTRAS = "extras_category";
@@ -66,9 +59,6 @@ public class ButtonSettings extends SettingsPreferenceFragment
     private SwitchPreferenceCompat mCameraWakeScreen;
     private SwitchPreferenceCompat mCameraSleepOnRelease;
     private ListPreference mVolumeKeyCursorControl;
-    private ListPreference mTorchLongPressPowerTimeout;
-
-    private Handler mHandler;
 
     private LineageHardwareManager mHardware;
 
@@ -84,36 +74,14 @@ public class ButtonSettings extends SettingsPreferenceFragment
         final ContentResolver resolver = requireActivity().getContentResolver();
         final PreferenceScreen prefScreen = getPreferenceScreen();
 
-        final boolean hasPowerKey = DeviceUtils.hasPowerKey();
         final boolean hasCameraKey = DeviceUtils.hasCameraKey(getActivity());
         final boolean hasVolumeKeys = DeviceUtils.hasVolumeKeys(getActivity());
 
         final boolean showCameraWake = DeviceUtils.canWakeUsingCameraKey(getActivity());
 
-        final PreferenceCategory powerCategory = prefScreen.findPreference(CATEGORY_POWER);
         final PreferenceCategory volumeCategory = prefScreen.findPreference(CATEGORY_VOLUME);
         final PreferenceCategory cameraCategory = prefScreen.findPreference(CATEGORY_CAMERA);
         final PreferenceCategory extrasCategory = prefScreen.findPreference(CATEGORY_EXTRAS);
-
-        // Long press power while display is off to activate torchlight
-        SwitchPreferenceCompat torchLongPressPowerGesture =
-                findPreference(KEY_TORCH_LONG_PRESS_POWER_GESTURE);
-        final int torchLongPressPowerTimeout = LineageSettings.System.getInt(resolver,
-                LineageSettings.System.TORCH_LONG_PRESS_POWER_TIMEOUT, 0);
-        mTorchLongPressPowerTimeout = initList(KEY_TORCH_LONG_PRESS_POWER_TIMEOUT,
-                torchLongPressPowerTimeout);
-
-        mHandler = new Handler(Looper.getMainLooper());
-
-        if (hasPowerKey) {
-            if (!DeviceUtils.deviceSupportsFlashLight(requireActivity())) {
-                powerCategory.removePreference(torchLongPressPowerGesture);
-                powerCategory.removePreference(mTorchLongPressPowerTimeout);
-            }
-        }
-        if (!hasPowerKey || powerCategory.getPreferenceCount() == 0) {
-            prefScreen.removePreference(powerCategory);
-        }
 
         if (hasCameraKey) {
             mCameraWakeScreen = findPreference(KEY_CAMERA_WAKE_SCREEN);
@@ -161,13 +129,6 @@ public class ButtonSettings extends SettingsPreferenceFragment
         return list;
     }
 
-    private void handleListChange(ListPreference pref, Object newValue, String setting) {
-        String value = (String) newValue;
-        int index = pref.findIndexOfValue(value);
-        pref.setSummary(pref.getEntries()[index]);
-        LineageSettings.System.putInt(getContentResolver(), setting, Integer.parseInt(value));
-    }
-
     private void handleSystemListChange(ListPreference pref, Object newValue, String setting) {
         String value = (String) newValue;
         int index = pref.findIndexOfValue(value);
@@ -180,10 +141,6 @@ public class ButtonSettings extends SettingsPreferenceFragment
         if (preference == mVolumeKeyCursorControl) {
             handleSystemListChange(mVolumeKeyCursorControl, newValue,
                     Settings.System.VOLUME_KEY_CURSOR_CONTROL);
-            return true;
-        } else if (preference == mTorchLongPressPowerTimeout) {
-            handleListChange(mTorchLongPressPowerTimeout, newValue,
-                    LineageSettings.System.TORCH_LONG_PRESS_POWER_TIMEOUT);
             return true;
         }
         return false;
@@ -246,11 +203,6 @@ public class ButtonSettings extends SettingsPreferenceFragment
                 result.add(KEY_VOLUME_KEY_CURSOR_CONTROL);
                 result.add(KEY_VOLUME_MUSIC_CONTROLS);
                 result.add(KEY_CLICK_PARTIAL_SCREENSHOT);
-            }
-
-            if (!DeviceUtils.deviceSupportsFlashLight(context)) {
-                result.add(KEY_TORCH_LONG_PRESS_POWER_GESTURE);
-                result.add(KEY_TORCH_LONG_PRESS_POWER_TIMEOUT);
             }
 
             return result;
