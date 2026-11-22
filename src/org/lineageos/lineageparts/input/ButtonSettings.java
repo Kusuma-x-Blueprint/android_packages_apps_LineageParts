@@ -6,29 +6,19 @@
 
 package org.lineageos.lineageparts.input;
 
-import static android.view.WindowManagerPolicyConstants.NAV_BAR_MODE_3BUTTON_OVERLAY;
-
-import static com.android.systemui.shared.recents.utilities.Utilities.isLargeScreen;
-
 import static org.lineageos.internal.util.DeviceKeysConstants.*;
 
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.om.IOverlayManager;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.RemoteException;
-import android.os.ServiceManager;
 import android.os.UserHandle;
 import android.provider.Settings;
 import android.util.ArraySet;
 import android.util.Log;
-import android.view.Display;
-import android.view.IWindowManager;
-import android.view.WindowManagerGlobal;
 
 import androidx.preference.ListPreference;
 import androidx.preference.Preference;
@@ -69,12 +59,6 @@ public class ButtonSettings extends SettingsPreferenceFragment
     private static final String KEY_VOLUME_PANEL_POSITION = "volume_panel_on_left";
     private static final String KEY_VOLUME_WAKE_SCREEN = "volume_wake_screen";
     private static final String KEY_VOLUME_ANSWER_CALL = "volume_answer_call";
-    private static final String KEY_NAVIGATION_BACK_LONG_PRESS = "navigation_back_long_press";
-    private static final String KEY_NAVIGATION_HOME_LONG_PRESS = "navigation_home_long_press";
-    private static final String KEY_NAVIGATION_HOME_DOUBLE_TAP = "navigation_home_double_tap";
-    private static final String KEY_NAVIGATION_APP_SWITCH_LONG_PRESS =
-            "navigation_app_switch_long_press";
-    private static final String KEY_EDGE_LONG_SWIPE = "navigation_bar_edge_long_swipe";
     private static final String KEY_POWER_END_CALL = "power_end_call";
     private static final String KEY_HOME_ANSWER_CALL = "home_answer_call";
     private static final String KEY_VOLUME_MUSIC_CONTROLS = "volbtn_music_controls";
@@ -85,7 +69,6 @@ public class ButtonSettings extends SettingsPreferenceFragment
     private static final String KEY_CLICK_PARTIAL_SCREENSHOT =
             "click_partial_screenshot";
     public static final String KEY_SWAP_CAPACITIVE_KEYS = "swap_capacitive_keys";
-    private static final String KEY_ENABLE_TASKBAR = "enable_taskbar";
 
     private static final String CATEGORY_POWER = "power_key";
     private static final String CATEGORY_HOME = "home_key";
@@ -95,24 +78,15 @@ public class ButtonSettings extends SettingsPreferenceFragment
     private static final String CATEGORY_APPSWITCH = "app_switch_key";
     private static final String CATEGORY_CAMERA = "camera_key";
     private static final String CATEGORY_VOLUME = "volume_keys";
-    private static final String CATEGORY_NAVBAR = "navigation_bar_category";
     private static final String CATEGORY_EXTRAS = "extras_category";
 
     private SwitchPreferenceCompat mCameraWakeScreen;
     private SwitchPreferenceCompat mCameraSleepOnRelease;
     private ListPreference mVolumeKeyCursorControl;
     private SwitchPreferenceCompat mSwapVolumeButtons;
-    private ListPreference mNavigationBackLongPressAction;
-    private ListPreference mNavigationHomeLongPressAction;
-    private ListPreference mNavigationHomeDoubleTapAction;
-    private ListPreference mNavigationAppSwitchLongPressAction;
-    private ListPreference mEdgeLongSwipeAction;
     private SwitchPreferenceCompat mPowerEndCall;
     private SwitchPreferenceCompat mHomeAnswerCall;
     private ListPreference mTorchLongPressPowerTimeout;
-    private SwitchPreferenceCompat mEnableTaskbar;
-
-    private PreferenceCategory mNavigationPreferencesCat;
 
     private Handler mHandler;
 
@@ -172,55 +146,6 @@ public class ButtonSettings extends SettingsPreferenceFragment
         mHomeAnswerCall = findPreference(KEY_HOME_ANSWER_CALL);
 
         mHandler = new Handler(Looper.getMainLooper());
-
-        mNavigationPreferencesCat = findPreference(CATEGORY_NAVBAR);
-
-        Action defaultBackLongPressAction = Action.fromIntSafe(res.getInteger(
-                org.lineageos.platform.internal.R.integer.config_longPressOnBackBehavior));
-        Action defaultHomeLongPressAction = Action.fromIntSafe(res.getInteger(
-                org.lineageos.platform.internal.R.integer.config_longPressOnHomeBehavior));
-        Action defaultHomeDoubleTapAction = Action.fromIntSafe(res.getInteger(
-                org.lineageos.platform.internal.R.integer.config_doubleTapOnHomeBehavior));
-        Action defaultAppSwitchLongPressAction = Action.fromIntSafe(res.getInteger(
-                org.lineageos.platform.internal.R.integer.config_longPressOnAppSwitchBehavior));
-        Action backLongPressAction = Action.fromSettings(resolver,
-                LineageSettings.System.KEY_BACK_LONG_PRESS_ACTION,
-                defaultBackLongPressAction);
-        Action homeLongPressAction = Action.fromSettings(resolver,
-                LineageSettings.System.KEY_HOME_LONG_PRESS_ACTION,
-                defaultHomeLongPressAction);
-        Action homeDoubleTapAction = Action.fromSettings(resolver,
-                LineageSettings.System.KEY_HOME_DOUBLE_TAP_ACTION,
-                defaultHomeDoubleTapAction);
-        Action appSwitchLongPressAction = Action.fromSettings(resolver,
-                LineageSettings.System.KEY_APP_SWITCH_LONG_PRESS_ACTION,
-                defaultAppSwitchLongPressAction);
-        Action edgeLongSwipeAction = Action.fromSettings(resolver,
-                LineageSettings.System.KEY_EDGE_LONG_SWIPE_ACTION,
-                Action.NOTHING);
-
-        // Navigation bar back long press
-        mNavigationBackLongPressAction = initList(KEY_NAVIGATION_BACK_LONG_PRESS,
-                backLongPressAction);
-
-        // Navigation bar home long press
-        mNavigationHomeLongPressAction = initList(KEY_NAVIGATION_HOME_LONG_PRESS,
-                homeLongPressAction);
-
-        // Navigation bar home double tap
-        mNavigationHomeDoubleTapAction = initList(KEY_NAVIGATION_HOME_DOUBLE_TAP,
-                homeDoubleTapAction);
-
-        // Navigation bar app switch long press
-        mNavigationAppSwitchLongPressAction = initList(KEY_NAVIGATION_APP_SWITCH_LONG_PRESS,
-                appSwitchLongPressAction);
-
-        // Edge long swipe gesture
-        mEdgeLongSwipeAction = initList(KEY_EDGE_LONG_SWIPE, edgeLongSwipeAction);
-
-        final boolean navbarForced = isNavbarForced(getActivity());
-        mNavigationPreferencesCat.setEnabled(navbarForced);
-        updateDisableNavkeysCategories(navbarForced, /* force */ true);
 
         if (hasPowerKey) {
             if (!TelephonyUtils.isVoiceCapable(requireActivity())) {
@@ -330,12 +255,6 @@ public class ButtonSettings extends SettingsPreferenceFragment
             prefScreen.removePreference(volumeCategory);
         }
 
-        // Only show the navigation bar category on devices that have a navigation bar
-        // or support disabling the hardware keys
-        if (!hasNavigationBar() && !isKeyDisablerSupported(getActivity())) {
-            prefScreen.removePreference(mNavigationPreferencesCat);
-        }
-
         if (mCameraWakeScreen != null) {
             if (mCameraSleepOnRelease != null && !res.getBoolean(
                     org.lineageos.platform.internal.R.bool.config_singleStageCameraKey)) {
@@ -352,52 +271,6 @@ public class ButtonSettings extends SettingsPreferenceFragment
                 volumeWakeScreen.setDisableDependentsState(true);
             }
         }
-
-        mEnableTaskbar = findPreference(KEY_ENABLE_TASKBAR);
-        if (mEnableTaskbar != null) {
-            if (!isLargeScreen(requireContext()) || !hasNavigationBar()) {
-                mNavigationPreferencesCat.removePreference(mEnableTaskbar);
-            } else {
-                mEnableTaskbar.setOnPreferenceChangeListener(this);
-                mEnableTaskbar.setChecked(LineageSettings.System.getInt(resolver,
-                        LineageSettings.System.ENABLE_TASKBAR,
-                        isLargeScreen(requireContext()) ? 1 : 0) == 1);
-            }
-        }
-
-        List<Integer> unsupportedValues = new ArrayList<>();
-        List<String> entries = new ArrayList<>(
-                Arrays.asList(res.getStringArray(R.array.hardware_keys_action_entries)));
-        List<String> values = new ArrayList<>(
-                Arrays.asList(res.getStringArray(R.array.hardware_keys_action_values)));
-
-        // hide split screen option unconditionally - it doesn't work at the moment
-        // once someone gets it working again: hide it only for low-ram devices
-        // (check ActivityManager.isLowRamDeviceStatic())
-        unsupportedValues.add(Action.SPLIT_SCREEN.ordinal());
-
-        for (int unsupportedValue: unsupportedValues) {
-            entries.remove(unsupportedValue);
-            values.remove(unsupportedValue);
-        }
-
-        String[] actionEntries = entries.toArray(new String[0]);
-        String[] actionValues = values.toArray(new String[0]);
-
-        mNavigationBackLongPressAction.setEntries(actionEntries);
-        mNavigationBackLongPressAction.setEntryValues(actionValues);
-
-        mNavigationHomeLongPressAction.setEntries(actionEntries);
-        mNavigationHomeLongPressAction.setEntryValues(actionValues);
-
-        mNavigationHomeDoubleTapAction.setEntries(actionEntries);
-        mNavigationHomeDoubleTapAction.setEntryValues(actionValues);
-
-        mNavigationAppSwitchLongPressAction.setEntries(actionEntries);
-        mNavigationAppSwitchLongPressAction.setEntryValues(actionValues);
-
-        mEdgeLongSwipeAction.setEntries(actionEntries);
-        mEdgeLongSwipeAction.setEntryValues(actionValues);
     }
 
     @Override
@@ -425,14 +298,7 @@ public class ButtonSettings extends SettingsPreferenceFragment
         }
 
         final boolean navbarForced = isNavbarForced(getActivity());
-        updateDisableNavkeysCategories(navbarForced, false);
-        if (mNavigationPreferencesCat != null) {
-            mNavigationPreferencesCat.setEnabled(navbarForced);
-        }
-    }
-
-    private ListPreference initList(String key, Action value) {
-        return initList(key, value.ordinal());
+        enablePreference(mHomeAnswerCall, !navbarForced);
     }
 
     private ListPreference initList(String key, int value) {
@@ -460,23 +326,7 @@ public class ButtonSettings extends SettingsPreferenceFragment
 
     @Override
     public boolean onPreferenceChange(Preference preference, Object newValue) {
-        if (preference == mNavigationBackLongPressAction) {
-            handleListChange((ListPreference) preference, newValue,
-                    LineageSettings.System.KEY_BACK_LONG_PRESS_ACTION);
-            return true;
-        } else if (preference == mNavigationHomeLongPressAction) {
-            handleListChange((ListPreference) preference, newValue,
-                    LineageSettings.System.KEY_HOME_LONG_PRESS_ACTION);
-            return true;
-        } else if (preference == mNavigationHomeDoubleTapAction) {
-            handleListChange((ListPreference) preference, newValue,
-                    LineageSettings.System.KEY_HOME_DOUBLE_TAP_ACTION);
-            return true;
-        } else if (preference == mNavigationAppSwitchLongPressAction) {
-            handleListChange((ListPreference) preference, newValue,
-                    LineageSettings.System.KEY_APP_SWITCH_LONG_PRESS_ACTION);
-            return true;
-        } else if (preference == mVolumeKeyCursorControl) {
+        if (preference == mVolumeKeyCursorControl) {
             handleSystemListChange(mVolumeKeyCursorControl, newValue,
                     Settings.System.VOLUME_KEY_CURSOR_CONTROL);
             return true;
@@ -484,26 +334,8 @@ public class ButtonSettings extends SettingsPreferenceFragment
             handleListChange(mTorchLongPressPowerTimeout, newValue,
                     LineageSettings.System.TORCH_LONG_PRESS_POWER_TIMEOUT);
             return true;
-        } else if (preference == mEdgeLongSwipeAction) {
-            handleListChange(mEdgeLongSwipeAction, newValue,
-                    LineageSettings.System.KEY_EDGE_LONG_SWIPE_ACTION);
-            return true;
-        } else if (preference == mEnableTaskbar) {
-            LineageSettings.System.putInt(getContentResolver(),
-                    LineageSettings.System.ENABLE_TASKBAR, ((Boolean) newValue) ? 1 : 0);
-            return true;
         }
         return false;
-    }
-
-    private static void setButtonNavigationMode(String overlayPackage) {
-        IOverlayManager overlayManager = IOverlayManager.Stub.asInterface(
-                ServiceManager.getService(Context.OVERLAY_SERVICE));
-        try {
-            overlayManager.setEnabledExclusiveInCategory(overlayPackage, UserHandle.USER_CURRENT);
-        } catch (RemoteException e) {
-            throw e.rethrowFromSystemServer();
-        }
     }
 
     private void enablePreference(Preference pref, boolean enabled) {
@@ -516,41 +348,6 @@ public class ButtonSettings extends SettingsPreferenceFragment
         return LineageSettings.System.getIntForUser(
                 context.getContentResolver(),
                 LineageSettings.System.FORCE_SHOW_NAVBAR, 0, UserHandle.USER_CURRENT) != 0;
-    }
-
-    private void updateDisableNavkeysCategories(boolean navbarEnabled, boolean force) {
-        /* Toggle hardkey control availability depending on navbar state */
-        if (mNavigationPreferencesCat != null) {
-            if (force || navbarEnabled) {
-                if (DeviceUtils.isEdgeToEdgeEnabled(requireContext())) {
-                    mNavigationPreferencesCat.addPreference(mEdgeLongSwipeAction);
-
-                    mNavigationPreferencesCat.removePreference(mNavigationBackLongPressAction);
-                    mNavigationPreferencesCat.removePreference(mNavigationHomeLongPressAction);
-                    mNavigationPreferencesCat.removePreference(mNavigationHomeDoubleTapAction);
-                    mNavigationPreferencesCat.removePreference(mNavigationAppSwitchLongPressAction);
-                } else {
-                    mNavigationPreferencesCat.addPreference(mNavigationBackLongPressAction);
-                    mNavigationPreferencesCat.addPreference(mNavigationHomeLongPressAction);
-                    mNavigationPreferencesCat.addPreference(mNavigationHomeDoubleTapAction);
-                    mNavigationPreferencesCat.addPreference(mNavigationAppSwitchLongPressAction);
-
-                    mNavigationPreferencesCat.removePreference(mEdgeLongSwipeAction);
-                }
-            }
-        }
-        enablePreference(mHomeAnswerCall, !navbarEnabled);
-    }
-
-    private static boolean hasNavigationBar() {
-        boolean hasNavigationBar = false;
-        try {
-            IWindowManager windowManager = WindowManagerGlobal.getWindowManagerService();
-            hasNavigationBar = windowManager.hasNavigationBar(Display.DEFAULT_DISPLAY);
-        } catch (RemoteException e) {
-            Log.e(TAG, "Error getting navigation bar status");
-        }
-        return hasNavigationBar;
     }
 
     private static boolean isKeyDisablerSupported(Context context) {
@@ -710,20 +507,6 @@ public class ButtonSettings extends SettingsPreferenceFragment
                 result.add(KEY_TORCH_LONG_PRESS_POWER_TIMEOUT);
             }
 
-
-            if (!isLargeScreen(context) || !hasNavigationBar()) {
-                result.add(KEY_ENABLE_TASKBAR);
-            }
-
-            if (hasNavigationBar()) {
-                if (DeviceUtils.isEdgeToEdgeEnabled(context)) {
-                    result.add(KEY_NAVIGATION_HOME_LONG_PRESS);
-                    result.add(KEY_NAVIGATION_HOME_DOUBLE_TAP);
-                    result.add(KEY_NAVIGATION_APP_SWITCH_LONG_PRESS);
-                } else {
-                    result.add(KEY_EDGE_LONG_SWIPE);
-                }
-            }
             return result;
         }
     };
