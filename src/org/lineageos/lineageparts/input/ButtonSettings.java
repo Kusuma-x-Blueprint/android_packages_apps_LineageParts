@@ -49,8 +49,6 @@ public class ButtonSettings extends SettingsPreferenceFragment
     private static final String KEY_CAMERA_SLEEP_ON_RELEASE = "camera_sleep_on_release";
     private static final String KEY_CAMERA_WAKE_SCREEN = "camera_wake_screen";
     private static final String KEY_VOLUME_KEY_CURSOR_CONTROL = "volume_key_cursor_control";
-    private static final String KEY_SWAP_VOLUME_BUTTONS = "swap_volume_buttons";
-    private static final String KEY_VOLUME_PANEL_POSITION = "volume_panel_on_left";
     private static final String KEY_VOLUME_MUSIC_CONTROLS = "volbtn_music_controls";
     private static final String KEY_TORCH_LONG_PRESS_POWER_GESTURE =
             "torch_long_press_power_gesture";
@@ -68,7 +66,6 @@ public class ButtonSettings extends SettingsPreferenceFragment
     private SwitchPreferenceCompat mCameraWakeScreen;
     private SwitchPreferenceCompat mCameraSleepOnRelease;
     private ListPreference mVolumeKeyCursorControl;
-    private SwitchPreferenceCompat mSwapVolumeButtons;
     private ListPreference mTorchLongPressPowerTimeout;
 
     private Handler mHandler;
@@ -140,13 +137,6 @@ public class ButtonSettings extends SettingsPreferenceFragment
                     Settings.System.VOLUME_KEY_CURSOR_CONTROL, 0);
             mVolumeKeyCursorControl = initList(KEY_VOLUME_KEY_CURSOR_CONTROL,
                     cursorControlAction);
-
-            int swapVolumeKeys = LineageSettings.System.getInt(resolver,
-                    LineageSettings.System.SWAP_VOLUME_KEYS_ON_ROTATION, 0);
-            mSwapVolumeButtons = prefScreen.findPreference(KEY_SWAP_VOLUME_BUTTONS);
-            if (mSwapVolumeButtons != null) {
-                mSwapVolumeButtons.setChecked(swapVolumeKeys > 0);
-            }
         } else {
             extrasCategory.removePreference(findPreference(KEY_CLICK_PARTIAL_SCREENSHOT));
         }
@@ -235,31 +225,6 @@ public class ButtonSettings extends SettingsPreferenceFragment
         hardware.set(LineageHardwareManager.FEATURE_KEY_SWAP, enabled);
     }
 
-    @Override
-    public boolean onPreferenceTreeClick(Preference preference) {
-        if (preference == mSwapVolumeButtons) {
-            int value;
-
-            if (mSwapVolumeButtons.isChecked()) {
-                /* The native inputflinger service uses the same logic of:
-                 *   1 - the volume rocker is on one the sides, relative to the natural
-                 *       orientation of the display (true for all phones and most tablets)
-                 *   2 - the volume rocker is on the top or bottom, relative to the
-                 *       natural orientation of the display (true for some tablets)
-                 */
-                value = getResources().getInteger(
-                        R.integer.config_volumeRockerVsDisplayOrientation);
-            } else {
-                /* Disable the re-orient functionality */
-                value = 0;
-            }
-            LineageSettings.System.putInt(requireActivity().getContentResolver(),
-                    LineageSettings.System.SWAP_VOLUME_KEYS_ON_ROTATION, value);
-        }
-
-        return super.onPreferenceTreeClick(preference);
-    }
-
     public static final Searchable.SearchIndexProvider SEARCH_INDEX_DATA_PROVIDER =
             new BaseSearchIndexProvider() {
 
@@ -278,10 +243,8 @@ public class ButtonSettings extends SettingsPreferenceFragment
 
             if (!DeviceUtils.hasVolumeKeys(context)) {
                 result.add(CATEGORY_VOLUME);
-                result.add(KEY_SWAP_VOLUME_BUTTONS);
                 result.add(KEY_VOLUME_KEY_CURSOR_CONTROL);
                 result.add(KEY_VOLUME_MUSIC_CONTROLS);
-                result.add(KEY_VOLUME_PANEL_POSITION);
                 result.add(KEY_CLICK_PARTIAL_SCREENSHOT);
             }
 
