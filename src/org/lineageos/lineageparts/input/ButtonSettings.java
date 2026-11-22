@@ -46,18 +46,15 @@ public class ButtonSettings extends SettingsPreferenceFragment
     private static final String KEY_CAMERA_LAUNCH = "camera_launch";
     private static final String KEY_CAMERA_SLEEP_ON_RELEASE = "camera_sleep_on_release";
     private static final String KEY_CAMERA_WAKE_SCREEN = "camera_wake_screen";
-    private static final String KEY_VOLUME_KEY_CURSOR_CONTROL = "volume_key_cursor_control";
     private static final String KEY_CLICK_PARTIAL_SCREENSHOT =
             "click_partial_screenshot";
     public static final String KEY_SWAP_CAPACITIVE_KEYS = "swap_capacitive_keys";
 
     private static final String CATEGORY_CAMERA = "camera_key";
-    private static final String CATEGORY_VOLUME = "volume_keys";
     private static final String CATEGORY_EXTRAS = "extras_category";
 
     private SwitchPreferenceCompat mCameraWakeScreen;
     private SwitchPreferenceCompat mCameraSleepOnRelease;
-    private ListPreference mVolumeKeyCursorControl;
 
     private LineageHardwareManager mHardware;
 
@@ -78,7 +75,6 @@ public class ButtonSettings extends SettingsPreferenceFragment
 
         final boolean showCameraWake = DeviceUtils.canWakeUsingCameraKey(getActivity());
 
-        final PreferenceCategory volumeCategory = prefScreen.findPreference(CATEGORY_VOLUME);
         final PreferenceCategory cameraCategory = prefScreen.findPreference(CATEGORY_CAMERA);
         final PreferenceCategory extrasCategory = prefScreen.findPreference(CATEGORY_EXTRAS);
 
@@ -99,16 +95,8 @@ public class ButtonSettings extends SettingsPreferenceFragment
             prefScreen.removePreference(cameraCategory);
         }
 
-        if (hasVolumeKeys) {
-            int cursorControlAction = Settings.System.getInt(resolver,
-                    Settings.System.VOLUME_KEY_CURSOR_CONTROL, 0);
-            mVolumeKeyCursorControl = initList(KEY_VOLUME_KEY_CURSOR_CONTROL,
-                    cursorControlAction);
-        } else {
+        if (!hasVolumeKeys) {
             extrasCategory.removePreference(findPreference(KEY_CLICK_PARTIAL_SCREENSHOT));
-        }
-        if (!hasVolumeKeys || volumeCategory.getPreferenceCount() == 0) {
-            prefScreen.removePreference(volumeCategory);
         }
 
         if (mCameraWakeScreen != null) {
@@ -119,29 +107,8 @@ public class ButtonSettings extends SettingsPreferenceFragment
         }
     }
 
-    private ListPreference initList(String key, int value) {
-        ListPreference list = getPreferenceScreen().findPreference(key);
-        if (list == null) return null;
-        list.setValue(Integer.toString(value));
-        list.setSummary(list.getEntry());
-        list.setOnPreferenceChangeListener(this);
-        return list;
-    }
-
-    private void handleSystemListChange(ListPreference pref, Object newValue, String setting) {
-        String value = (String) newValue;
-        int index = pref.findIndexOfValue(value);
-        pref.setSummary(pref.getEntries()[index]);
-        Settings.System.putInt(getContentResolver(), setting, Integer.parseInt(value));
-    }
-
     @Override
     public boolean onPreferenceChange(Preference preference, Object newValue) {
-        if (preference == mVolumeKeyCursorControl) {
-            handleSystemListChange(mVolumeKeyCursorControl, newValue,
-                    Settings.System.VOLUME_KEY_CURSOR_CONTROL);
-            return true;
-        }
         return false;
     }
 
@@ -198,8 +165,6 @@ public class ButtonSettings extends SettingsPreferenceFragment
             }
 
             if (!DeviceUtils.hasVolumeKeys(context)) {
-                result.add(CATEGORY_VOLUME);
-                result.add(KEY_VOLUME_KEY_CURSOR_CONTROL);
                 result.add(KEY_CLICK_PARTIAL_SCREENSHOT);
             }
 

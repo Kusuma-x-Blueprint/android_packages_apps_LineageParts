@@ -105,19 +105,6 @@
         <item>13</item>
     </string-array>
 
-    <!-- Volume key cursor control -->
-    <string-array name="volbtn_cursor_control_entries" translatable="false">
-        <item>@string/volbtn_cursor_control_off</item>
-        <item>@string/volbtn_cursor_control_on</item>
-        <item>@string/volbtn_cursor_control_on_reverse</item>
-    </string-array>
-
-    <string-array name="volbtn_cursor_control_values" translatable="false">
-        <item>0</item>
-        <item>1</item>
-        <item>2</item>
-    </string-array>
-
     <!-- Volume panel position -->
     <string-array name="volume_panel_position_entries" translatable="false">
         <item>@string/volume_panel_position_left</item>
