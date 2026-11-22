@@ -28,7 +28,7 @@ import org.lineageos.lineageparts.search.BaseSearchIndexProvider;
 import org.lineageos.lineageparts.search.Searchable;
 import org.lineageos.lineageparts.utils.DeviceUtils;
 import org.lineageos.lineageparts.utils.GenericUtils;
-import org.lineageos.preference.ConstraintsHelper;
+import lineageos.preference.ConstraintsHelper;
 
 import java.util.Set;
 
