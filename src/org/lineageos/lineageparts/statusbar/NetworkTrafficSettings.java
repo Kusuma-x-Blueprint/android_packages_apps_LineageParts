@@ -35,8 +35,19 @@ public class NetworkTrafficSettings extends SettingsPreferenceFragment
 
         mNetTrafficMode = findPreference(LineageSettings.Secure.NETWORK_TRAFFIC_MODE);
         mNetTrafficMode.setOnPreferenceChangeListener(this);
+        mNetTrafficMode.setEntries(new CharSequence[] {
+                getString(R.string.network_traffic_mode_disable),
+                getString(R.string.network_traffic_mode_all)
+        });
+        mNetTrafficMode.setEntryValues(new CharSequence[] {
+                "0",
+                "3"
+        });
         int mode = LineageSettings.Secure.getInt(resolver,
                 LineageSettings.Secure.NETWORK_TRAFFIC_MODE, 0);
+        if (mode != 0 && mode != 3) {
+            mode = 3;
+        }
         mNetTrafficMode.setValue(String.valueOf(mode));
 
         mNetTrafficAutohide = findPreference(LineageSettings.Secure.NETWORK_TRAFFIC_AUTOHIDE);
