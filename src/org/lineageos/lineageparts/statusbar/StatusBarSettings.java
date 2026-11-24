@@ -25,7 +25,6 @@ import lineageos.providers.LineageSettings;
 
 import org.lineageos.lineageparts.R;
 import org.lineageos.lineageparts.SettingsPreferenceFragment;
-import org.lineageos.lineageparts.utils.DeviceUtils;
 
 public class StatusBarSettings extends SettingsPreferenceFragment {
 
@@ -38,7 +37,6 @@ public class StatusBarSettings extends SettingsPreferenceFragment {
     private static final String QS_SHOW_AUTO_BRIGHTNESS = "qs_show_auto_brightness";
     private static final String QS_SHOW_BRIGHTNESS_SLIDER = "qs_show_brightness_slider";
 
-    private static final String STATUS_BAR_CLOCK_STYLE = "status_bar_clock";
     private static final String STATUS_BAR_BATTERY_STYLE = "status_bar_battery_style";
     private static final String STATUS_BAR_SHOW_BATTERY_PERCENT = "status_bar_show_battery_percent";
     private static final String STATUS_BAR_QUICK_QS_PULLDOWN = "qs_quick_pulldown";
@@ -54,7 +52,6 @@ public class StatusBarSettings extends SettingsPreferenceFragment {
     private LineageSecureSettingListPreference mQsBrightnessSliderPosition;
     private LineageSecureSettingSwitchPreference mQsShowAutoBrightness;
     private LineageSystemSettingListPreference mQuickPulldown;
-    private LineageSystemSettingListPreference mStatusBarClock;
     private LineageSystemSettingListPreference mStatusBarBatteryShowPercent;
 
     private PreferenceCategory mStatusBarBatteryCategory;
@@ -66,8 +63,6 @@ public class StatusBarSettings extends SettingsPreferenceFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.status_bar_settings);
-
-        mStatusBarClock = findPreference(STATUS_BAR_CLOCK_STYLE);
 
         mStatusBarClockCategory = getPreferenceScreen().findPreference(CATEGORY_CLOCK);
 
@@ -138,26 +133,10 @@ public class StatusBarSettings extends SettingsPreferenceFragment {
             getPreferenceScreen().addPreference(mStatusBarBatteryCategory);
         }
 
-        final boolean disallowCenteredClock = DeviceUtils.hasCenteredCutout(getActivity());
-
         // Adjust status bar preferences for RTL
         if (isRtlMode(getResources())) {
-            if (disallowCenteredClock) {
-                mStatusBarClock.setEntries(R.array.status_bar_clock_position_entries_notch_rtl);
-                mStatusBarClock.setEntryValues(R.array.status_bar_clock_position_values_notch);
-            } else {
-                mStatusBarClock.setEntries(R.array.status_bar_clock_position_entries_rtl);
-                mStatusBarClock.setEntryValues(R.array.status_bar_clock_position_values);
-            }
             mQuickPulldown.setEntries(R.array.status_bar_quick_qs_pulldown_entries_rtl);
         } else {
-            if (disallowCenteredClock) {
-                mStatusBarClock.setEntries(R.array.status_bar_clock_position_entries_notch);
-                mStatusBarClock.setEntryValues(R.array.status_bar_clock_position_values_notch);
-            } else {
-                mStatusBarClock.setEntries(R.array.status_bar_clock_position_entries);
-                mStatusBarClock.setEntryValues(R.array.status_bar_clock_position_values);
-            }
             mQuickPulldown.setEntries(R.array.status_bar_quick_qs_pulldown_entries);
         }
     }
