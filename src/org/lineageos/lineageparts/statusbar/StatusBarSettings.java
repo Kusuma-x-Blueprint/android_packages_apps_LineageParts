@@ -13,7 +13,6 @@ import android.os.BatteryManager;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.text.TextUtils;
-import android.text.format.DateFormat;
 
 import androidx.preference.PreferenceCategory;
 
@@ -40,7 +39,6 @@ public class StatusBarSettings extends SettingsPreferenceFragment {
     private static final String QS_SHOW_BRIGHTNESS_SLIDER = "qs_show_brightness_slider";
 
     private static final String STATUS_BAR_CLOCK_STYLE = "status_bar_clock";
-    private static final String STATUS_BAR_AM_PM = "status_bar_am_pm";
     private static final String STATUS_BAR_BATTERY_STYLE = "status_bar_battery_style";
     private static final String STATUS_BAR_SHOW_BATTERY_PERCENT = "status_bar_show_battery_percent";
     private static final String STATUS_BAR_QUICK_QS_PULLDOWN = "qs_quick_pulldown";
@@ -57,7 +55,6 @@ public class StatusBarSettings extends SettingsPreferenceFragment {
     private LineageSecureSettingSwitchPreference mQsShowAutoBrightness;
     private LineageSystemSettingListPreference mQuickPulldown;
     private LineageSystemSettingListPreference mStatusBarClock;
-    private LineageSystemSettingListPreference mStatusBarAmPm;
     private LineageSystemSettingListPreference mStatusBarBatteryShowPercent;
 
     private PreferenceCategory mStatusBarBatteryCategory;
@@ -70,7 +67,6 @@ public class StatusBarSettings extends SettingsPreferenceFragment {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.status_bar_settings);
 
-        mStatusBarAmPm = findPreference(STATUS_BAR_AM_PM);
         mStatusBarClock = findPreference(STATUS_BAR_CLOCK_STYLE);
 
         mStatusBarClockCategory = getPreferenceScreen().findPreference(CATEGORY_CLOCK);
@@ -140,12 +136,6 @@ public class StatusBarSettings extends SettingsPreferenceFragment {
             getPreferenceScreen().removePreference(mStatusBarBatteryCategory);
         } else {
             getPreferenceScreen().addPreference(mStatusBarBatteryCategory);
-        }
-
-        if (DateFormat.is24HourFormat(getActivity())) {
-            mStatusBarAmPm.setEnabled(false);
-            mStatusBarAmPm.setSummaryProvider(preference -> preference.getContext()
-                    .getString(R.string.status_bar_am_pm_info));
         }
 
         final boolean disallowCenteredClock = DeviceUtils.hasCenteredCutout(getActivity());
