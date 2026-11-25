@@ -21,7 +21,6 @@ import com.android.settingslib.fuelgauge.BatteryUtils;
 import lineageos.preference.LineageSecureSettingListPreference;
 import lineageos.preference.LineageSecureSettingSwitchPreference;
 import lineageos.preference.LineageSystemSettingListPreference;
-import lineageos.providers.LineageSettings;
 
 import org.lineageos.lineageparts.R;
 import org.lineageos.lineageparts.SettingsPreferenceFragment;
@@ -29,7 +28,6 @@ import org.lineageos.lineageparts.SettingsPreferenceFragment;
 public class StatusBarSettings extends SettingsPreferenceFragment {
 
     private static final String CATEGORY_BATTERY = "status_bar_battery_key";
-    private static final String CATEGORY_CLOCK = "status_bar_clock_key";
 
     private static final String ICON_BLACKLIST = "icon_blacklist";
 
@@ -55,7 +53,6 @@ public class StatusBarSettings extends SettingsPreferenceFragment {
     private LineageSystemSettingListPreference mStatusBarBatteryShowPercent;
 
     private PreferenceCategory mStatusBarBatteryCategory;
-    private PreferenceCategory mStatusBarClockCategory;
 
     private boolean mBatteryPresent;
 
@@ -63,8 +60,6 @@ public class StatusBarSettings extends SettingsPreferenceFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.status_bar_settings);
-
-        mStatusBarClockCategory = getPreferenceScreen().findPreference(CATEGORY_CLOCK);
 
         mStatusBarBatteryShowPercent = findPreference(STATUS_BAR_SHOW_BATTERY_PERCENT);
         LineageSystemSettingListPreference statusBarBattery =
@@ -119,12 +114,6 @@ public class StatusBarSettings extends SettingsPreferenceFragment {
 
         final String curIconBlacklist = Settings.Secure.getString(getContext().getContentResolver(),
                 ICON_BLACKLIST);
-
-        if (TextUtils.delimitedStringContains(curIconBlacklist, ',', "clock")) {
-            getPreferenceScreen().removePreference(mStatusBarClockCategory);
-        } else {
-            getPreferenceScreen().addPreference(mStatusBarClockCategory);
-        }
 
         if (!mBatteryPresent ||
                 TextUtils.delimitedStringContains(curIconBlacklist, ',', "battery")) {
