@@ -17,9 +17,9 @@ import android.os.UserManager;
 import android.provider.Settings;
 import android.service.controls.ControlsProviderService;
 
-import androidx.preference.CheckBoxPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceCategory;
+import androidx.preference.SwitchPreferenceCompat;
 
 import com.android.internal.util.EmergencyAffordanceManager;
 import com.android.settingslib.applications.ServiceListing;
@@ -40,12 +40,12 @@ public class PowerMenuActions extends SettingsPreferenceFragment {
 
     private PreferenceCategory mPowerMenuItemsCategory;
 
-    private CheckBoxPreference mScreenshotPref;
-    private CheckBoxPreference mAirplanePref;
-    private CheckBoxPreference mUsersPref;
-    private CheckBoxPreference mBugReportPref;
-    private CheckBoxPreference mEmergencyPref;
-    private CheckBoxPreference mDeviceControlsPref;
+    private SwitchPreferenceCompat mScreenshotPref;
+    private SwitchPreferenceCompat mAirplanePref;
+    private SwitchPreferenceCompat mUsersPref;
+    private SwitchPreferenceCompat mBugReportPref;
+    private SwitchPreferenceCompat mEmergencyPref;
+    private SwitchPreferenceCompat mDeviceControlsPref;
 
     private LineageGlobalActions mLineageGlobalActions;
 
