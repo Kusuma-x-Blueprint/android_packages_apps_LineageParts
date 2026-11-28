@@ -18,7 +18,6 @@ import android.provider.Settings;
 import android.service.controls.ControlsProviderService;
 
 import androidx.preference.Preference;
-import androidx.preference.PreferenceCategory;
 import androidx.preference.SwitchPreferenceCompat;
 
 import com.android.internal.util.EmergencyAffordanceManager;
@@ -35,10 +34,6 @@ import java.util.List;
 
 public class PowerMenuActions extends SettingsPreferenceFragment {
     final static String TAG = "PowerMenuActions";
-
-    private static final String CATEGORY_POWER_MENU_ITEMS = "power_menu_items";
-
-    private PreferenceCategory mPowerMenuItemsCategory;
 
     private SwitchPreferenceCompat mScreenshotPref;
     private SwitchPreferenceCompat mAirplanePref;
@@ -66,8 +61,6 @@ public class PowerMenuActions extends SettingsPreferenceFragment {
         mLineageGlobalActions = LineageGlobalActions.getInstance(mContext);
         mEmergencyAffordanceManager = new EmergencyAffordanceManager(mContext);
 
-        mPowerMenuItemsCategory = findPreference(CATEGORY_POWER_MENU_ITEMS);
-
         for (String action : PowerMenuConstants.getAllActions()) {
             if (action.equals(GLOBAL_ACTION_KEY_SCREENSHOT)) {
                 mScreenshotPref = findPreference(GLOBAL_ACTION_KEY_SCREENSHOT);
@@ -85,7 +78,7 @@ public class PowerMenuActions extends SettingsPreferenceFragment {
         }
 
         if (!TelephonyUtils.isVoiceCapable(requireActivity())) {
-            mPowerMenuItemsCategory.removePreference(mEmergencyPref);
+            getPreferenceScreen().removePreference(mEmergencyPref);
             mEmergencyPref = null;
         }
     }
@@ -106,14 +99,14 @@ public class PowerMenuActions extends SettingsPreferenceFragment {
 
         if (mUsersPref != null) {
             if (!UserHandle.MU_ENABLED || !UserManager.supportsMultipleUsers()) {
-                mPowerMenuItemsCategory.removePreference(mUsersPref);
+                getPreferenceScreen().removePreference(mUsersPref);
                 mUsersPref = null;
             } else {
                 List<UserInfo> users = mUserManager.getUsers();
                 boolean enabled = (users.size() > 1);
+                mUsersPref.setVisible(enabled);
                 mUsersPref.setChecked(mLineageGlobalActions.userConfigContains(
                         GLOBAL_ACTION_KEY_USERS) && enabled);
-                mUsersPref.setEnabled(enabled);
             }
         }
 
@@ -133,7 +126,7 @@ public class PowerMenuActions extends SettingsPreferenceFragment {
             mDeviceControlsPref.setChecked(mLineageGlobalActions.userConfigContains(
                     GLOBAL_ACTION_KEY_DEVICECONTROLS));
 
-            // Enable preference if any device control app is installed
+            // Show preference if any device control app is installed
             ServiceListing serviceListing = new ServiceListing.Builder(mContext)
                     .setIntentAction(ControlsProviderService.SERVICE_CONTROLS)
                     .setPermission(Manifest.permission.BIND_CONTROLS)
@@ -142,7 +135,7 @@ public class PowerMenuActions extends SettingsPreferenceFragment {
                     .setTag("controls_providers")
                     .build();
             serviceListing.addCallback(
-                    services -> mDeviceControlsPref.setEnabled(!services.isEmpty()));
+                    services -> mDeviceControlsPref.setVisible(!services.isEmpty()));
             serviceListing.reload();
         }
 
@@ -199,16 +192,10 @@ public class PowerMenuActions extends SettingsPreferenceFragment {
                 getContentResolver(), Settings.Global.BUGREPORT_IN_POWER_MENU, 0) == 1;
         boolean isPrimaryUser = currentUser == null || currentUser.isPrimary();
         if (mBugReportPref != null) {
-            mBugReportPref.setEnabled(developmentSettings && isPrimaryUser);
-            if (!developmentSettings) {
-                mBugReportPref.setChecked(false);
-                mBugReportPref.setSummary(R.string.power_menu_bug_report_devoptions_unavailable);
-            } else if (!isPrimaryUser) {
-                mBugReportPref.setChecked(false);
-                mBugReportPref.setSummary(R.string.power_menu_bug_report_unavailable_for_user);
-            } else {
+            boolean showBugReport = developmentSettings && isPrimaryUser;
+            mBugReportPref.setVisible(showBugReport);
+            if (showBugReport) {
                 mBugReportPref.setChecked(bugReport);
-                mBugReportPref.setSummary(null);
             }
         }
         if (mEmergencyPref != null) {
